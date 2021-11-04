@@ -1,41 +1,31 @@
+db.host: localhost
+db.name: miner
+db.username: root
+db.password: password
+
 spring:
-  application:
-    name: hey-car
-  h2:
-    console:
-      enabled: true
-      path: /h2
-      settings:
-        web-allow-others: true
+  application.name: hubspot-service
+  profiles.active: default
+
   datasource:
-    url: jdbc:h2:~/user/.h2/hey-car-data
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: "jdbc:postgresql://${db.host}:5432/${db.name}"
+    platform: postgresql
+    driverClassName: org.postgresql.Driver
+    username: ${db.username}
+    password: ${db.password}
   jpa:
-    database: h2
-    generate-ddl: true
-    hibernate:
-      ddl-auto: update
-
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    hibernate.ddl-auto: update
     properties:
-      hibernate.dialect: org.hibernate.dialect.H2Dialect
-      hibernate.format-sql: true
-    show-sql: true
-
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
-    baseline-on-migrate: true
-    enabled: true
-    user: ${spring.datasource.username}
-    password: ${spring.datasource.password}
-    url: ${spring.datasource.url}
-    schemas:
-      - PUBLIC
-
-jwt:
-  secret:javainuse
-spring.jpa.properties.hibernate.default_schema: public
-hibernate:
-  dialect: org.hibernate.dialect.H2Dialect
-server:
-  port: 8000
+    ignore-missing-migrations: true
+    out-of-order: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false

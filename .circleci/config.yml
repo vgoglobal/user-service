@@ -42,4 +42,49 @@ jobs:
             _JAVA_OPTIONS: "-XX:MaxRAMPercentage=90.0"
             GRADLE_OPTS: '-Dorg.gradle.jvmargs="-XX:MaxRAMPercentage=90.0 -XX:+HeapDumpOnOutOfMemoryError" -Dorg.gradle.daemon=false -Dorg.gradle.workers.max=1 -Dorg.gradle.parallel=false'
           command: mvn clean install
+definitions:
+  install: &k8s-install
+    kube-orb/install-kubectl:
+      kubectl-version: ${KUBECTL_VERSION}
+  default_parameters: &default_parameters
+    parameters:
+      kubeconfig:
+        description: Kubeconfig
+        type: string
+      k8s_template:
+        description: Kubernetes deployment template
+        type: string
+  default_image: &default-image
+    docker:
+      - image: alpine
+  default_env_variable_for_bash: &default_env_variable
+    environment:
+      BASH: true
+  default_commands: &default-commands
+    run:
+      command: apk update; apk add gettext curl bash; mkdir ~/.kube k8s
+  attach: &attach-workspace
+    attach_workspace:
+      at: .
+  template: &k8s-templating
+    run:
+      name: templating
+      command: |
+        export IMAGE=${AWS_ECR_ACCOUNT_URL}/${AWS_ECR_REPO_NAME}:${CIRCLE_SHA1} ; \
+        envsubst < << parameters.k8s_template >> > k8s/k8s-deployment.yml
+  setup: &k8s-setup
+    run:
+      name: Setup kube config
+      command: echo << parameters.kubeconfig >> | base64 -d > ~/.kube/config
 
+  deploy:
+    <<: *default_parameters
+    <<: *default-image
+    <<: *default_env_variable
+    steps:
+      - *default-commands
+      - *k8s-install
+      - *attach-workspace
+      - *k8s-templating
+      - *k8s-setup
+##      - *k8s-apply-deployment

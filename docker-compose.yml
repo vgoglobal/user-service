@@ -2,11 +2,11 @@ version: '3'
 
 services:
   hey-car-app-container:
-    image: hey-car-app:1
+    image: solactive-ticks-app:1
     build:
       context: ./
       dockerfile: Dockerfile
     volumes:
-      - /data/hey-car-app
+      - /data/solactive-ticks-app
     ports:
       - "8081:8080"

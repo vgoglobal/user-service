@@ -2,6 +2,7 @@ package de.hey_car.exception;
 
 import de.hey_car.model.ApiErrorResponse;
 
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +43,10 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return new ApiErrorResponse(400, 5001, ex.getMessage());
     }
 
-    @ExceptionHandler(value = {NoHandlerFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse noHandlerFoundException(Exception ex) {
-        return new ApiErrorResponse(404, 4041, ex.getMessage());
+    @ExceptionHandler(value = {NoContentException.class})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ApiErrorResponse noContentException(NoContentException ex) {
+        return new ApiErrorResponse(204, 5001, "Timestamp expired");
     }
 
     @ExceptionHandler(value = {Exception.class})
@@ -60,9 +61,5 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return new ApiErrorResponse(500, 5002, ex.getMessage());
     }
 
-    @ExceptionHandler(value = {NotDataFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse noDataFoundException(NotDataFoundException ex) {
-        return new ApiErrorResponse(404, 4041, ex.getMessage());
-    }
+
 }
