@@ -1,6 +1,8 @@
 package de.hey_car.controllers;
 
+import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.Wallet;
+import de.hey_car.repository.entity.CountryWalletEntity;
 import de.hey_car.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +32,16 @@ public class WalletController {
     public ResponseEntity<String> createWallet(@RequestBody @Valid Wallet wallet) {
         LOGGER.info("Processing create wallet ");
         walletService.createWallet(wallet);
+        return ResponseEntity.ok().body(" published successfully ");
+    }
+
+    /**
+     * Method to
+     */
+    @PostMapping(value = "/top-up")
+    public ResponseEntity<String> topUpWallet(@RequestBody @Valid CountryWallet countryWallet) {
+        LOGGER.info("Processing create wallet balance");
+        walletService.topUpWallet(countryWallet);
         return ResponseEntity.ok().body(" published successfully ");
     }
 

@@ -14,5 +14,5 @@ import java.time.Instant;
 public class CountryWallet {
     private String currency;
     private Double amount;
-
+    private String walletId;
 }

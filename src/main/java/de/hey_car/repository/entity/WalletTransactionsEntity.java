@@ -14,16 +14,20 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "country_wallet")
-public class CountryWalletEntity {
+@Table(name = "wallet_transactions")
+public class WalletTransactionsEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String id;
-    @Column(name = "currency", nullable = false)
-    private String currency;
     @Column(name = "amount", nullable = false)
-    private Double amount;
+    private String amount;
+    @Column(name = "currency", nullable = false)
+    private Double currency;
+    @Column(name = "trx_type", nullable = false)
+    private Double trxType;
+    @Column(name = "closing_balance", nullable = false)
+    private Double closingBalance;
     @Column(name = "create_date")
     private Instant createdDate;
     @Column(name = "update_date")

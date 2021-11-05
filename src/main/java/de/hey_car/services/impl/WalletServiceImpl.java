@@ -1,5 +1,6 @@
 package de.hey_car.services.impl;
 
+import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.User;
 import de.hey_car.dto.Wallet;
 import de.hey_car.repository.CountryWalletRepository;
@@ -30,7 +31,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public WalletEntity createWallet(Wallet wallet) {
         WalletEntity walletEntity = walletRepository.save(inbound(wallet));
-      //  countryWalletRepository.saveAll(prepareCountryWallet(wallet));
+        //  countryWalletRepository.saveAll(prepareCountryWallet(wallet));
         return walletEntity;
     }
 
@@ -60,6 +61,11 @@ public class WalletServiceImpl implements WalletService {
         } else {
             throw new Exception(("Invalid id"));
         }
+    }
+
+    @Override
+    public void topUpWallet(CountryWallet countryWallet) {
+        countryWalletRepository.save(prepareCountryWallet(countryWallet));
     }
 
     private WalletEntity inbound(Wallet wallet) {
@@ -102,6 +108,13 @@ public class WalletServiceImpl implements WalletService {
                 .map(p -> CountryWalletEntity.builder()
                         .amount(p.getAmount()).currency(p.getCurrency())
                         .build()).collect(Collectors.toList());
+
+    }
+
+    private CountryWalletEntity prepareCountryWallet(CountryWallet countryWallet) {
+        return CountryWalletEntity.builder().walletId(countryWallet.getWalletId())
+                .currency(countryWallet.getCurrency())
+                .amount(countryWallet.getAmount()).build();
 
     }
 }
