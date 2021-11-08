@@ -5,7 +5,6 @@ import de.hey_car.repository.UserRepository;
 import de.hey_car.repository.entity.UserEntity;
 import de.hey_car.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,6 +39,7 @@ public class UserServiceImpl implements UserService {
     public Optional<UserEntity> getUser(String id) {
         return userRepository.findById(id);
     }
+
 
 
     private UserEntity inbound(User user) {

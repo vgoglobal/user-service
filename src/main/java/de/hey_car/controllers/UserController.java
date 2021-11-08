@@ -27,18 +27,19 @@ public class UserController {
 
     /**
      * Method to
+     * @return
      */
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createUser(@RequestBody @Valid User user) {
+    public ResponseEntity<UserEntity> createUser(@RequestBody @Valid User user) {
         LOGGER.info("Processing create user ");
-        userService.createUser(user);
-        return ResponseEntity.ok().body(" published successfully ");
+        //userService.createUser(user);
+        return ResponseEntity.ok().body(userService.createUser(user));
     }
 
     /**
      * Method to
      */
-    @GetMapping(value = "/{confirmationCode}/{id}/confirm")
+    @PutMapping(value = "/{confirmationCode}/{id}/confirm")
     public ResponseEntity<String> confirmEmail(@PathVariable String confirmationCode, @PathVariable String id) {
         LOGGER.info("Confirming the email ");
 

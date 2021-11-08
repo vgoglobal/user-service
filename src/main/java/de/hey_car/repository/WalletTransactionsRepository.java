@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface WalletTransactionsRepository extends CrudRepository<WalletTransactionsEntity, String> {
-    Optional<WalletEntity> findByUserId(String userId);
+    //Optional<WalletEntity> findByUserId(String userId);
 }

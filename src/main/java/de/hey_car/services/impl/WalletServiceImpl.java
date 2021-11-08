@@ -1,12 +1,10 @@
 package de.hey_car.services.impl;
 
 import de.hey_car.dto.CountryWallet;
-import de.hey_car.dto.User;
 import de.hey_car.dto.Wallet;
 import de.hey_car.repository.CountryWalletRepository;
 import de.hey_car.repository.WalletRepository;
 import de.hey_car.repository.entity.CountryWalletEntity;
-import de.hey_car.repository.entity.UserEntity;
 import de.hey_car.repository.entity.WalletEntity;
 import de.hey_car.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;

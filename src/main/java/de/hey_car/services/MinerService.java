@@ -6,4 +6,5 @@ import de.hey_car.repository.entity.UserEntity;
 
 public interface MinerService {
     MinerEntity createResource(Miner miner);
+    MinerEntity getResource(String id);
 }

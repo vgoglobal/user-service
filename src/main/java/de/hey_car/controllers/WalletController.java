@@ -2,7 +2,7 @@ package de.hey_car.controllers;
 
 import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.Wallet;
-import de.hey_car.repository.entity.CountryWalletEntity;
+import de.hey_car.repository.entity.WalletEntity;
 import de.hey_car.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -27,12 +27,13 @@ public class WalletController {
 
     /**
      * Method to
+     * @return
      */
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createWallet(@RequestBody @Valid Wallet wallet) {
+    public ResponseEntity<WalletEntity> createWallet(@RequestBody @Valid Wallet wallet) {
         LOGGER.info("Processing create wallet ");
-        walletService.createWallet(wallet);
-        return ResponseEntity.ok().body(" published successfully ");
+
+        return ResponseEntity.ok().body(walletService.createWallet(wallet));
     }
 
     /**

@@ -1,5 +1,6 @@
 package de.hey_car.services;
 
+import de.hey_car.dto.Recipient;
 import de.hey_car.dto.User;
 import de.hey_car.repository.entity.UserEntity;
 

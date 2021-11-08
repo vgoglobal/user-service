@@ -2,13 +2,18 @@ package de.hey_car;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.User;
 import de.hey_car.dto.Wallet;
+import de.hey_car.repository.entity.UserEntity;
+import de.hey_car.repository.entity.WalletEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +24,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
@@ -32,9 +38,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class WalletrIntegrationTest {
+public class WalletIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
+    private String id;
+
+    private void setup() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        CountryWallet countryWallet = CountryWallet.builder().amount(2000.0).currency("INR").build();
+        List<CountryWallet> countryWalletList = new ArrayList<>();
+        countryWalletList.add(countryWallet);
+        String requestJson = ow.writeValueAsString(Wallet.builder().mobile(12342333L).countryWallet(countryWalletList).build());
+        MvcResult value  = mockMvc.perform(MockMvcRequestBuilders.post("/api/wallet/create")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON)).andReturn();
+        mapper.registerModule(new JavaTimeModule());
+
+        WalletEntity userEntity = mapper.readValue(value.getResponse().getContentAsString(), WalletEntity.class);
+        id = userEntity.getId();
+    }
 
     @Test
     public void testSaveWallet() throws Exception {
@@ -50,4 +74,18 @@ public class WalletrIntegrationTest {
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
+    @Test
+    public void TestWalletTopup() throws Exception {
+        setup();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        CountryWallet countryWallet = CountryWallet.builder().amount(2000.0).walletId(id).currency("INR").build();
+
+        String requestJson = ow.writeValueAsString(countryWallet);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/wallet/top-up")
+                .content(requestJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
 }

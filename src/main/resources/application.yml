@@ -1,6 +1,6 @@
 db.host: localhost
 db.name: miner
-db.username: root
+db.username: postgres
 db.password: password
 
 spring:
@@ -29,3 +29,8 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  servlet:
+    multipart:
+      enabled: true
+
+file.upload-dir: /Users/sivasyambuddana/
