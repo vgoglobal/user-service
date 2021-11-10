@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
 
@@ -16,5 +17,6 @@ public class Wallet {
     private Long mobile;
     private String otp;
     private Boolean otpConfirmed;
+    @NotNull
     private String userId;
 }
