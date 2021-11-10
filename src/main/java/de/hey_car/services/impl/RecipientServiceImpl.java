@@ -5,16 +5,18 @@ import de.hey_car.repository.RecipientRepository;
 import de.hey_car.repository.entity.RecipientEntity;
 import de.hey_car.services.RecipientService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class RecipientServiceImpl implements RecipientService {
+    @Autowired
     RecipientRepository recipientRepository;
 
     @Override
-    public void createRecipient(Recipient recipient) {
-        recipientRepository.save(inbound(recipient));
+    public RecipientEntity createRecipient(Recipient recipient) {
+        return recipientRepository.save(inbound(recipient));
     }
 
     @Override

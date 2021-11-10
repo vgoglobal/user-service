@@ -9,6 +9,8 @@ import de.hey_car.repository.entity.OrderEntity;
 import de.hey_car.repository.entity.MinerEntity;
 import de.hey_car.services.OrderService;
 import de.hey_car.services.StorageService;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +20,13 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
+@AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
+    @Autowired
     OrderRepository orderRepository;
+    @Autowired
     MinerRepository minerRepository;
+    @Autowired
     StorageService storageService;
 
     @Override
@@ -33,7 +39,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderEntity> getOrdersByCurrency(String currency) {
-        return orderRepository.findByFromCurrency(currency);
+        List<OrderEntity> orders = orderRepository.findByFromCurrency(currency);
+        return orders;
     }
 
     @Override
@@ -64,12 +71,13 @@ public class OrderServiceImpl implements OrderService {
                 .recipientId(order.getRecipientId()).fromCurrency(order.getFromCurrency())
                 .toCurrency(order.getToCurrency()).recipientAmount(order.getRecipientAmount())
                 .refId(generateRefId()).status(TransferStatusType.CREATED)
+                .userId(order.getUserId())
                 .transferFee(order.getTransferFee()).build();
     }
 
     private Transfer outbound(List<MinerEntity> minerEntities, OrderEntity exchangeOrder) {
         MinerEntity minerEntity = minerEntities.get(0);
-        return Transfer.builder().minerResourceType(minerEntity.getResourceType()).refId(exchangeOrder.getRefId())
+        return Transfer.builder().orderId(exchangeOrder.getId()).minerResourceType(minerEntity.getResourceType()).refId(exchangeOrder.getRefId())
                 .resourceAddress(minerEntity.getResourceAddress()).resourceCode(minerEntity.getResourceCode())
                 .resourceCurrency(minerEntity.getResourceCurrency()).resourceName(minerEntity.getResourceName())
                 .resourceNumber(minerEntity.getResourceNumber()).transferAmount(exchangeOrder.getAmount()).build();

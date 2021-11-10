@@ -8,6 +8,6 @@ import de.hey_car.repository.entity.UserEntity;
 import java.util.Optional;
 
 public interface RecipientService {
-    void createRecipient(Recipient user);
+    RecipientEntity createRecipient(Recipient user);
     RecipientEntity getRecipients(String userId);
 }

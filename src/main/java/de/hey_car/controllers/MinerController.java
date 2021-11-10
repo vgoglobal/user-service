@@ -1,11 +1,8 @@
 package de.hey_car.controllers;
 
 import de.hey_car.dto.Miner;
-import de.hey_car.dto.User;
 import de.hey_car.repository.entity.MinerEntity;
-import de.hey_car.repository.entity.UserEntity;
 import de.hey_car.services.MinerService;
-import de.hey_car.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  *
@@ -30,12 +26,12 @@ public class MinerController {
 
     /**
      * Method to
+     * @return
      */
     @PostMapping(value = "/resources/create")
-    public ResponseEntity<String> createResource(@RequestBody @Valid Miner miner) {
+    public ResponseEntity<MinerEntity> createResource(@RequestBody @Valid Miner miner) {
         LOGGER.info("Processing create resource locations ");
-        minerService.createResource(miner);
-        return ResponseEntity.ok().body(" resource successfully created");
+        return ResponseEntity.ok().body(minerService.createResource(miner));
     }
 
 

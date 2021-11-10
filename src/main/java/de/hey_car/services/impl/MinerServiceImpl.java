@@ -4,10 +4,12 @@ import de.hey_car.dto.Miner;
 import de.hey_car.repository.MinerRepository;
 import de.hey_car.repository.entity.MinerEntity;
 import de.hey_car.services.MinerService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class MinerServiceImpl implements MinerService {
     @Autowired
     MinerRepository minerRepository;

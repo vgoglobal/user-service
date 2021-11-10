@@ -12,6 +12,7 @@ import javax.persistence.Column;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transfer {
+    private String orderId;
     private String refId;
     private MinerResourceType minerResourceType;
     private String resourceName;

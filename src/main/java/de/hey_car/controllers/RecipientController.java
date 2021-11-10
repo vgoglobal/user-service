@@ -1,11 +1,8 @@
 package de.hey_car.controllers;
 
 import de.hey_car.dto.Recipient;
-import de.hey_car.dto.User;
 import de.hey_car.repository.entity.RecipientEntity;
-import de.hey_car.repository.entity.UserEntity;
 import de.hey_car.services.RecipientService;
-import de.hey_car.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.midi.Receiver;
 import javax.validation.Valid;
-import java.util.Optional;
 
 /**
  *
@@ -31,12 +26,13 @@ public class RecipientController {
 
     /**
      * Method to
+     * @return
      */
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createRecipient(@RequestBody @Valid Recipient recipient) {
+    public ResponseEntity<RecipientEntity> createRecipient(@RequestBody @Valid Recipient recipient) {
         LOGGER.info("Processing create recipient ");
-        recipientService.createRecipient(recipient);
-        return ResponseEntity.ok().body(" recipient successfully created ");
+
+        return ResponseEntity.ok().body(recipientService.createRecipient(recipient));
     }
 
     /**

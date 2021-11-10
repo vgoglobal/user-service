@@ -2,8 +2,9 @@ package de.hey_car.controllers;
 
 import de.hey_car.dto.Order;
 import de.hey_car.dto.Transfer;
+import de.hey_car.repository.entity.OrderEntity;
 import de.hey_car.services.OrderService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
  */
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("/api/order")
 public class OrderController {
     private static final Logger LOGGER = LogManager.getLogger(OrderController.class);
@@ -36,18 +38,18 @@ public class OrderController {
 
     /**
      * Method to
+     * @return
      */
     @GetMapping(value = "/{currency}")
-    public ResponseEntity<String> getOrders(@PathVariable String currency) {
-        LOGGER.info("Processing createExchangeOrder ");
-        orderService.getOrdersByCurrency(currency);
-        return ResponseEntity.ok().body("Orders");
+    public ResponseEntity<List<OrderEntity>> getOrders(@PathVariable String currency) {
+        LOGGER.info("Processing getOrders ");
+        return ResponseEntity.ok().body(orderService.getOrdersByCurrency(currency));
     }
 
     /**
      * Method to
      */
-    @PostMapping(value = "/{userId}/{id}")
+    @PostMapping(value = "/pick/{userId}/{id}")
     public ResponseEntity<String> pickOrder(@PathVariable String userId, @PathVariable String id) {
         LOGGER.info("Processing pickOrder ");
         orderService.pickOrder(userId, id);
