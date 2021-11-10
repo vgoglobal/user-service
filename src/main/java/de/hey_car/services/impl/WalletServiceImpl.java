@@ -29,7 +29,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public WalletEntity createWallet(Wallet wallet) {
         WalletEntity walletEntity = walletRepository.save(inbound(wallet));
-        //  countryWalletRepository.saveAll(prepareCountryWallet(wallet));
+
         return walletEntity;
     }
 
@@ -70,7 +70,6 @@ public class WalletServiceImpl implements WalletService {
         generateOtp(wallet);
         return WalletEntity.builder()
                 .mobile(wallet.getMobile()).otp(wallet.getOtp())
-                .countryWalletEntity(prepareCountryWallet(wallet))
                 .otpConfirmed(wallet.getOtpConfirmed())
                 .userId(wallet.getUserId()).build();
     }
@@ -101,13 +100,13 @@ public class WalletServiceImpl implements WalletService {
         wallet.setOtpConfirmed(false);
     }
 
-    private List<CountryWalletEntity> prepareCountryWallet(Wallet wallet) {
+    /*private List<CountryWalletEntity> prepareCountryWallet(Wallet wallet) {
         return wallet.getCountryWallet().stream()
                 .map(p -> CountryWalletEntity.builder()
                         .amount(p.getAmount()).currency(p.getCurrency())
                         .build()).collect(Collectors.toList());
 
-    }
+    }*/
 
     private CountryWalletEntity prepareCountryWallet(CountryWallet countryWallet) {
         return CountryWalletEntity.builder().walletId(countryWallet.getWalletId())

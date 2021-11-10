@@ -7,6 +7,8 @@ import de.hey_car.services.CurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
     @Autowired
@@ -19,7 +21,12 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public CurrencyEntity getExchange(String currencyCode) {
-        return currencyRepository.findByFromCurrency(currencyCode);
+        return currencyRepository.findByFromCurrency(currencyCode).orElseThrow();
+    }
+
+    @Override
+    public List<CurrencyEntity> getAll() {
+        return currencyRepository.findAll();
     }
 
     private CurrencyEntity inbound(Currency currency) {

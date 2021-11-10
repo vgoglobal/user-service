@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class RecipientServiceImpl implements RecipientService {
@@ -22,6 +24,11 @@ public class RecipientServiceImpl implements RecipientService {
     @Override
     public RecipientEntity getRecipients(String userId) {
         return recipientRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<RecipientEntity> getAll() {
+        return recipientRepository.findAll();
     }
 
     private RecipientEntity inbound(Recipient recipient) {

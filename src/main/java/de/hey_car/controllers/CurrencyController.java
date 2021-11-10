@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -44,5 +45,13 @@ public class CurrencyController {
     @GetMapping(value = "/{code}")
     public ResponseEntity<CurrencyEntity> getResource(@PathVariable String code) {
         return ResponseEntity.ok().body(currencyService.getExchange(code));
+    }
+
+    /**
+     * Method to
+     */
+    @GetMapping(value = "/currencies")
+    public ResponseEntity<List<CurrencyEntity>> getAll() {
+        return ResponseEntity.ok().body(currencyService.getAll());
     }
 }

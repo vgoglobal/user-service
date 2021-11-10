@@ -27,6 +27,7 @@ public class WalletController {
 
     /**
      * Method to
+     *
      * @return
      */
     @PostMapping(value = "/create")
@@ -49,7 +50,7 @@ public class WalletController {
     /**
      * Method to
      */
-    @GetMapping(value = "/{otp}/{id}/confirm")
+    @PostMapping(value = "/{otp}/{id}/confirm")
     public ResponseEntity<String> confirmEmail(@PathVariable String otp, @PathVariable String id) {
         LOGGER.info("Confirming the otp ");
 
@@ -57,11 +58,10 @@ public class WalletController {
         return ResponseEntity.ok().body(response);
     }
 
+    // TODO currency exhange fix, wallet join with country wallet
     @GetMapping(value = "/{id}/balance")
-    public ResponseEntity<String> getAccountBalance(@PathVariable String id) throws Exception {
+    public ResponseEntity<Wallet> getAccountBalance(@PathVariable String id) throws Exception {
         LOGGER.info("get wallet details ");
-
-         walletService.getWallet(id);
-        return ResponseEntity.ok().body("response");
+        return ResponseEntity.ok().body(walletService.getWallet(id));
     }
 }

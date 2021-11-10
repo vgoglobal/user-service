@@ -13,12 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Wallet {
-    private String id;
     private Long mobile;
-    private List<CountryWallet> countryWallet;
     private String otp;
     private Boolean otpConfirmed;
     private String userId;
-    private Instant createDate;
-    private Instant updatedDate;
 }

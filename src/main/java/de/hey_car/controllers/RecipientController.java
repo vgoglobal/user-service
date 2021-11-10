@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -42,7 +43,16 @@ public class RecipientController {
     public ResponseEntity<RecipientEntity> getRecipient(@PathVariable String userId) {
         LOGGER.info("Confirming the email ");
 
-        recipientService.getRecipients(userId);
         return ResponseEntity.ok().body(recipientService.getRecipients(userId));
+    }
+
+    /**
+     * Method to
+     * @return
+     */
+    @GetMapping(value = "/recipients")
+    public ResponseEntity<List<RecipientEntity>> getAll() {
+        LOGGER.info("Confirming the email ");
+        return ResponseEntity.ok().body(recipientService.getAll());
     }
 }

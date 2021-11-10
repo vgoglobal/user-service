@@ -51,7 +51,7 @@ public class WalletIntegrationTest {
         CountryWallet countryWallet = CountryWallet.builder().amount(2000.0).currency("INR").build();
         List<CountryWallet> countryWalletList = new ArrayList<>();
         countryWalletList.add(countryWallet);
-        String requestJson = ow.writeValueAsString(Wallet.builder().mobile(12342333L).countryWallet(countryWalletList).build());
+        String requestJson = ow.writeValueAsString(Wallet.builder().mobile(12342333L).build());
         MvcResult value  = mockMvc.perform(MockMvcRequestBuilders.post("/api/wallet/create")
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON)).andReturn();
         mapper.registerModule(new JavaTimeModule());
@@ -69,7 +69,7 @@ public class WalletIntegrationTest {
         CountryWallet countryWallet = CountryWallet.builder().amount(2000.0).currency("INR").build();
         List<CountryWallet> countryWalletList = new ArrayList<>();
         countryWalletList.add(countryWallet);
-        String requestJson = ow.writeValueAsString(Wallet.builder().mobile(12342333L).countryWallet(countryWalletList).build());
+        String requestJson = ow.writeValueAsString(Wallet.builder().mobile(12342333L).build());
         mockMvc.perform(MockMvcRequestBuilders.post("/api/wallet/create")
                 .content(requestJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }

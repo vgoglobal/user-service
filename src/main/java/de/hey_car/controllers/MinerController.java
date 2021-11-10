@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *
@@ -26,6 +27,7 @@ public class MinerController {
 
     /**
      * Method to
+     *
      * @return
      */
     @PostMapping(value = "/resources/create")
@@ -41,5 +43,15 @@ public class MinerController {
     @GetMapping(value = "/resources/{id}")
     public ResponseEntity<MinerEntity> getResource(@PathVariable String id) {
         return ResponseEntity.ok().body(minerService.getResource(id));
+    }
+
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @GetMapping(value = "/resources")
+    public ResponseEntity<List<MinerEntity>> getAll() {
+        return ResponseEntity.ok().body(minerService.getAll());
     }
 }

@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class MinerServiceImpl implements MinerService {
@@ -22,6 +24,11 @@ public class MinerServiceImpl implements MinerService {
     @Override
     public MinerEntity getResource(String id) {
         return minerRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public List<MinerEntity> getAll() {
+        return minerRepository.findAll();
     }
 
     private MinerEntity inbound(Miner miner) {
