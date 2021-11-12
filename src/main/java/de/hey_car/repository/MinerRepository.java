@@ -13,4 +13,5 @@ import java.util.Optional;
 @Repository
 public interface MinerRepository extends JpaRepository<MinerEntity, String> {
     List<MinerEntity> findByResourceCurrency(String currencyCode);
+    MinerEntity findByUserId(String userId);
 }

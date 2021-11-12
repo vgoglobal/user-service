@@ -42,7 +42,6 @@ public class RecipientController {
     @GetMapping(value = "/{userId}")
     public ResponseEntity<RecipientEntity> getRecipient(@PathVariable String userId) {
         LOGGER.info("Confirming the email ");
-
         return ResponseEntity.ok().body(recipientService.getRecipients(userId));
     }
 

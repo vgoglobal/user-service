@@ -5,6 +5,7 @@ import de.hey_car.dto.Transfer;
 import de.hey_car.dto.TransferStatusType;
 import de.hey_car.repository.OrderRepository;
 import de.hey_car.repository.MinerRepository;
+import de.hey_car.repository.entity.OrderDetailsEntity;
 import de.hey_car.repository.entity.OrderEntity;
 import de.hey_car.repository.entity.MinerEntity;
 import de.hey_car.services.OrderService;
@@ -33,14 +34,20 @@ public class OrderServiceImpl implements OrderService {
     public Transfer createExchangeOrder(Order order) {
         // TODO remove miners whose balance is less the transfer amount
         List<MinerEntity> minerDetails = minerRepository.findByResourceCurrency(order.getFromCurrency());
-        OrderEntity orderEntity = orderRepository.save(inbound(order));
-        return outbound(minerDetails, orderEntity);
+        MinerEntity miner = selectMiner(minerDetails);
+        OrderEntity orderEntity = orderRepository.save(inbound(order, miner));
+        return outbound(selectMiner(minerDetails), orderEntity);
+    }
+
+    private MinerEntity selectMiner(List<MinerEntity> minerDetails) {
+        // TODO need to use selection of miner using some logic
+        //TODO check his wallet balance logic
+        return minerDetails.get(0);
     }
 
     @Override
     public List<OrderEntity> getOrdersByCurrency(String currency) {
-        List<OrderEntity> orders = orderRepository.findByFromCurrency(currency);
-        return orders;
+        return orderRepository.findByFromCurrency(currency);
     }
 
     @Override
@@ -48,6 +55,9 @@ public class OrderServiceImpl implements OrderService {
         Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
         if (orderEntity.isPresent()) {
             OrderEntity newOrderEntity = orderEntity.get();
+            OrderDetailsEntity orderDetailsEntity = newOrderEntity.getOrderDetailsEntity();
+            orderDetailsEntity.setOffshoreMinerId(minerRepository.findByUserId(userId));
+            newOrderEntity.setOrderDetailsEntity(orderDetailsEntity);
             newOrderEntity.setPickedBy(userId);
             newOrderEntity.setStatus(TransferStatusType.IN_PROGRESS);
             orderRepository.save(newOrderEntity);
@@ -66,17 +76,28 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private OrderEntity inbound(Order order) {
+    @Override
+    public List<OrderEntity> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public List<OrderEntity> getOrdersByUser(String userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
+    private OrderEntity inbound(Order order, MinerEntity minerEntity) {
         return OrderEntity.builder().amount(order.getAmount())
                 .recipientId(order.getRecipientId()).fromCurrency(order.getFromCurrency())
                 .toCurrency(order.getToCurrency()).recipientAmount(order.getRecipientAmount())
                 .refId(generateRefId()).status(TransferStatusType.CREATED)
+                .orderDetailsEntity(OrderDetailsEntity.builder().onshoreMinerId(minerEntity).build())
                 .userId(order.getUserId())
                 .transferFee(order.getTransferFee()).build();
     }
 
-    private Transfer outbound(List<MinerEntity> minerEntities, OrderEntity exchangeOrder) {
-        MinerEntity minerEntity = minerEntities.get(0);
+    private Transfer outbound(MinerEntity minerEntity, OrderEntity exchangeOrder) {
+
         return Transfer.builder().orderId(exchangeOrder.getId()).minerResourceType(minerEntity.getResourceType()).refId(exchangeOrder.getRefId())
                 .resourceAddress(minerEntity.getResourceAddress()).resourceCode(minerEntity.getResourceCode())
                 .resourceCurrency(minerEntity.getResourceCurrency()).resourceName(minerEntity.getResourceName())

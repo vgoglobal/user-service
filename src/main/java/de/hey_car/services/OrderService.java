@@ -12,4 +12,6 @@ public interface OrderService {
     List<OrderEntity> getOrdersByCurrency(String currency);
     void pickOrder(String userId, String orderId);
     void updateOrder(String userId, String orderId, MultipartFile file) throws Exception;
+    List<OrderEntity> getAllOrders();
+    List<OrderEntity> getOrdersByUser(String userId);
 }

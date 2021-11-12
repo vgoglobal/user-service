@@ -29,6 +29,8 @@ public class OrderController {
 
     /**
      * Method to
+     *
+     * @return
      */
     @PostMapping(value = "/exchange/create")
     public ResponseEntity<Transfer> createExchangeOrder(@RequestBody @Valid Order order) {
@@ -38,12 +40,24 @@ public class OrderController {
 
     /**
      * Method to
+     *
      * @return
      */
     @GetMapping(value = "/{currency}")
     public ResponseEntity<List<OrderEntity>> getOrders(@PathVariable String currency) {
         LOGGER.info("Processing getOrders ");
         return ResponseEntity.ok().body(orderService.getOrdersByCurrency(currency));
+    }
+
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @GetMapping(value = "/")
+    public ResponseEntity<List<OrderEntity>> getAllOrders() {
+        LOGGER.info("Processing getOrders ");
+        return ResponseEntity.ok().body(orderService.getAllOrders());
     }
 
     /**
@@ -74,5 +88,16 @@ public class OrderController {
         LOGGER.info("Processing updateOrderStatus ");
         orderService.updateOrder(userId, orderId, file);
         return ResponseEntity.ok().body("Orders status updated");
+    }
+
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @GetMapping(value = "/users/{userId}")
+    public ResponseEntity<List<OrderEntity>> getOrdersByUserId(@PathVariable String userId) {
+        LOGGER.info("Processing getOrdersByUserId ");
+        return ResponseEntity.ok().body(orderService.getOrdersByUser(userId));
     }
 }

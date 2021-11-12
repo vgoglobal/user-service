@@ -22,6 +22,9 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     ignore-missing-migrations: true

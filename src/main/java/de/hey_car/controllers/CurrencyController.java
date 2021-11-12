@@ -1,11 +1,8 @@
 package de.hey_car.controllers;
 
 import de.hey_car.dto.Currency;
-import de.hey_car.dto.Miner;
 import de.hey_car.repository.entity.CurrencyEntity;
-import de.hey_car.repository.entity.MinerEntity;
 import de.hey_car.services.CurrencyService;
-import de.hey_car.services.MinerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,9 +39,9 @@ public class CurrencyController {
     /**
      * Method to
      */
-    @GetMapping(value = "/{code}")
-    public ResponseEntity<CurrencyEntity> getResource(@PathVariable String code) {
-        return ResponseEntity.ok().body(currencyService.getExchange(code));
+    @GetMapping(value = "/{fromCurrency}/{toCurrency}")
+    public ResponseEntity<CurrencyEntity> getResource(@PathVariable String fromCurrency, @PathVariable String toCurrency) {
+        return ResponseEntity.ok().body(currencyService.getExchange(fromCurrency, toCurrency));
     }
 
     /**

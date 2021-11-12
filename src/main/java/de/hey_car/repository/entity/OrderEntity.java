@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 
 @Builder
 @Data
@@ -47,6 +48,9 @@ public class OrderEntity {
     private Instant createdDate;
     @Column(name = "update_date")
     private Instant updateDate;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_details")
+    private OrderDetailsEntity orderDetailsEntity;
 
     @PrePersist
     public void prePersist() {

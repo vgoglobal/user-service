@@ -2,6 +2,7 @@ package de.hey_car.controllers;
 
 import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.Wallet;
+import de.hey_car.dto.WalletResponse;
 import de.hey_car.repository.entity.WalletEntity;
 import de.hey_car.services.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,6 @@ public class WalletController {
     @PostMapping(value = "/create")
     public ResponseEntity<WalletEntity> createWallet(@RequestBody @Valid Wallet wallet) {
         LOGGER.info("Processing create wallet ");
-
         return ResponseEntity.ok().body(walletService.createWallet(wallet));
     }
 
@@ -60,7 +60,7 @@ public class WalletController {
 
     // TODO currency exhange fix, wallet join with country wallet
     @GetMapping(value = "/{id}/balance")
-    public ResponseEntity<Wallet> getAccountBalance(@PathVariable String id) throws Exception {
+    public ResponseEntity<WalletResponse> getAccountBalance(@PathVariable String id) throws Exception {
         LOGGER.info("get wallet details ");
         return ResponseEntity.ok().body(walletService.getWallet(id));
     }

@@ -2,6 +2,7 @@ package de.hey_car.services.impl;
 
 import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.Wallet;
+import de.hey_car.dto.WalletResponse;
 import de.hey_car.repository.CountryWalletRepository;
 import de.hey_car.repository.WalletRepository;
 import de.hey_car.repository.entity.CountryWalletEntity;
@@ -29,7 +30,6 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public WalletEntity createWallet(Wallet wallet) {
         WalletEntity walletEntity = walletRepository.save(inbound(wallet));
-
         return walletEntity;
     }
 
@@ -52,8 +52,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet getWallet(String id) throws Exception {
-        Optional<WalletEntity> walletEntity = walletRepository.findByUserId(id);
+    public WalletResponse getWallet(String id) throws Exception {
+        Optional<WalletEntity> walletEntity = walletRepository.findById(id);
         if (walletEntity.isPresent()) {
             return outbound(walletEntity.get());
         } else {
@@ -67,18 +67,19 @@ public class WalletServiceImpl implements WalletService {
     }
 
     private WalletEntity inbound(Wallet wallet) {
-        generateOtp(wallet);
         return WalletEntity.builder()
-                .mobile(wallet.getMobile()).otp(wallet.getOtp())
-                .otpConfirmed(wallet.getOtpConfirmed())
+                .mobile(wallet.getMobile()).otp(generateOtp(wallet))
+                .otpConfirmed(false)
                 .userId(wallet.getUserId()).build();
     }
 
-    private Wallet outbound(WalletEntity walletEntity) {
-        return Wallet.builder()
+    private WalletResponse outbound(WalletEntity walletEntity) {
+        return WalletResponse.builder()
                 .mobile(walletEntity.getMobile())
-                .otp(walletEntity.getOtp())
-                .otpConfirmed(walletEntity.getOtpConfirmed()).build();
+                .userId(walletEntity.getUserId())
+                .countryWallet(prepareCountryWallet(walletEntity))
+                .walletId(walletEntity.getId())
+                .build();
     }
 
     private static String generateString() {
@@ -86,11 +87,10 @@ public class WalletServiceImpl implements WalletService {
         return "uuid = " + uuid;
     }
 
-    private void generateOtp(Wallet wallet) {
+    private String generateOtp(Wallet wallet) {
         Random rand = new Random();
         int number = rand.nextInt(999999);
-        wallet.setOtp(number + "");
-        wallet.setOtpConfirmed(false);
+        return number + "";
     }
 
     private void generateOtp(WalletEntity wallet) {
@@ -100,13 +100,13 @@ public class WalletServiceImpl implements WalletService {
         wallet.setOtpConfirmed(false);
     }
 
-    /*private List<CountryWalletEntity> prepareCountryWallet(Wallet wallet) {
-        return wallet.getCountryWallet().stream()
-                .map(p -> CountryWalletEntity.builder()
+    private List<CountryWallet> prepareCountryWallet(WalletEntity wallet) {
+        return wallet.getCountryWalletEntity().stream()
+                .map(p -> CountryWallet.builder()
                         .amount(p.getAmount()).currency(p.getCurrency())
                         .build()).collect(Collectors.toList());
 
-    }*/
+    }
 
     private CountryWalletEntity prepareCountryWallet(CountryWallet countryWallet) {
         return CountryWalletEntity.builder().walletId(countryWallet.getWalletId())

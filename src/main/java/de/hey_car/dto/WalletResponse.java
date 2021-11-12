@@ -7,17 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.List;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Wallet {
+public class WalletResponse {
     private Long mobile; //TODO need to change it to wallet number
-    @NotNull
     private String userId;
-    @JsonIgnore
     private List<CountryWallet> countryWallet;
+    private String walletId;
 }

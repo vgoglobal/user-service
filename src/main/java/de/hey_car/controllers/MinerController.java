@@ -50,7 +50,7 @@ public class MinerController {
      *
      * @return
      */
-    @GetMapping(value = "/resources")
+    @GetMapping(value = "/")
     public ResponseEntity<List<MinerEntity>> getAll() {
         return ResponseEntity.ok().body(minerService.getAll());
     }

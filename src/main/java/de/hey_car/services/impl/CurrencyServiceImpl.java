@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
@@ -16,12 +17,18 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public CurrencyEntity createExchange(Currency currency) {
+        Optional<CurrencyEntity> currencyEntity = currencyRepository.findByFromCurrencyAndToCurrency(currency.getFromCurrency(), currency.getToCurrency());
+        if (currencyEntity.isPresent()) {
+            CurrencyEntity newCurrency = currencyEntity.get();
+            newCurrency.setAmount(currency.getValue());
+            return currencyRepository.save(newCurrency);
+        }
         return currencyRepository.save(inbound(currency));
     }
 
     @Override
-    public CurrencyEntity getExchange(String currencyCode) {
-        return currencyRepository.findByFromCurrency(currencyCode).orElseThrow();
+    public CurrencyEntity getExchange(String fromCurrency, String toCurrency) {
+        return currencyRepository.findByFromCurrencyAndToCurrency(fromCurrency, toCurrency).orElseThrow();
     }
 
     @Override
@@ -35,5 +42,4 @@ public class CurrencyServiceImpl implements CurrencyService {
                 .toCurrency(currency.getToCurrency())
                 .amount(currency.getValue()).build();
     }
-
 }
