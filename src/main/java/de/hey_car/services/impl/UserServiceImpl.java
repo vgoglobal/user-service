@@ -1,5 +1,6 @@
 package de.hey_car.services.impl;
 
+import de.hey_car.dto.Login;
 import de.hey_car.dto.User;
 import de.hey_car.repository.UserRepository;
 import de.hey_car.repository.entity.UserEntity;
@@ -20,10 +21,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity createUser(User user) {
-        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate Email ");
         }
         return userRepository.save(inbound(user));
+    }
+
+    @Override
+    public UserEntity updateUser(User user, String id) {
+        Optional<UserEntity> userEntity = userRepository.findById(id);
+        if (userEntity.isPresent()) {
+            UserEntity newUserEntity = inbound(user);
+            newUserEntity.setId(id);
+            userRepository.save(newUserEntity);
+        }
+        return null;
     }
 
     @Override
@@ -40,7 +52,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
-
+    @Override
+    public UserEntity loginUser(Login login) {
+        Optional<UserEntity> userEntity = userRepository.findByEmailAndPassword(login.getUserName(), login.getPassword());
+        if (userEntity.isEmpty())
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        return userEntity.get();
+    }
 
     private UserEntity inbound(User user) {
         return UserEntity.builder()
@@ -49,8 +67,10 @@ public class UserServiceImpl implements UserService {
                 .address(user.getAddress())
                 .country(user.getCountry())
                 .confirmationCode(generateString())
+                .password(user.getPassword())
                 .confirmed(false)
                 .createdDate(Instant.now())
+                .role(user.getRoles())
                 .email(user.getEmail()).build();
     }
 

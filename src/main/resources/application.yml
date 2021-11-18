@@ -1,12 +1,18 @@
 db.host: localhost
-db.name: miner
+db.name: exchange
 db.username: postgres
 db.password: password
 
 spring:
-  application.name: hubspot-service
+  application.name: exchange-service
   profiles.active: default
-
+  #session:
+   # store-type: jdbc
+    #jdbc:
+     # table-name: SPRING_SESSION
+      #initializer:
+       # enabled: false
+      #initialize-schema: always
   datasource:
     url: "jdbc:postgresql://${db.host}:5432/${db.name}"
     platform: postgresql

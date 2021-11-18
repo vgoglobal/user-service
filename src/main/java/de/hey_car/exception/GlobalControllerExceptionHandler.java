@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -43,22 +44,28 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         return new ApiErrorResponse(400, 5001, ex.getMessage());
     }
 
+    @ExceptionHandler(value = {HttpClientErrorException.Unauthorized.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrorResponse unauthorizedException(ConstraintViolationException ex) {
+        return new ApiErrorResponse(401, 5002, ex.getMessage());
+    }
+
     @ExceptionHandler(value = {NoContentException.class})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ApiErrorResponse noContentException(NoContentException ex) {
-        return new ApiErrorResponse(204, 5001, "Timestamp expired");
+        return new ApiErrorResponse(204, 5003, "Timestamp expired");
     }
 
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiErrorResponse unknownException(Exception ex) {
-        return new ApiErrorResponse(500, 5002, ex.getMessage());
+        return new ApiErrorResponse(500, 5004, ex.getMessage());
     }
 
     @ExceptionHandler(value = {CustomDBException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiErrorResponse customDBException(Exception ex) {
-        return new ApiErrorResponse(500, 5002, ex.getMessage());
+        return new ApiErrorResponse(500, 5005, ex.getMessage());
     }
 
 

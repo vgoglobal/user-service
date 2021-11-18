@@ -5,12 +5,15 @@ import de.hey_car.dto.Transfer;
 import de.hey_car.dto.TransferStatusType;
 import de.hey_car.repository.OrderRepository;
 import de.hey_car.repository.MinerRepository;
+import de.hey_car.repository.OrderStatusRepository;
 import de.hey_car.repository.entity.OrderDetailsEntity;
 import de.hey_car.repository.entity.OrderEntity;
 import de.hey_car.repository.entity.MinerEntity;
+import de.hey_car.repository.entity.OrderStatusEntity;
 import de.hey_car.services.OrderService;
 import de.hey_car.services.StorageService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,11 +32,13 @@ public class OrderServiceImpl implements OrderService {
     MinerRepository minerRepository;
     @Autowired
     StorageService storageService;
+    @Autowired
+    OrderStatusRepository orderStatusRepository;
 
     @Override
     public Transfer createExchangeOrder(Order order) {
         // TODO remove miners whose balance is less the transfer amount
-        List<MinerEntity> minerDetails = minerRepository.findByResourceCurrency(order.getFromCurrency());
+        List<MinerEntity> minerDetails = minerRepository.findMiners(order.getFromCurrency(), order.getAmount());
         MinerEntity miner = selectMiner(minerDetails);
         OrderEntity orderEntity = orderRepository.save(inbound(order, miner));
         return outbound(selectMiner(minerDetails), orderEntity);
@@ -41,13 +46,13 @@ public class OrderServiceImpl implements OrderService {
 
     private MinerEntity selectMiner(List<MinerEntity> minerDetails) {
         // TODO need to use selection of miner using some logic
-        //TODO check his wallet balance logic
-        return minerDetails.get(0);
+        Random randomizer = new Random();
+        return minerDetails.get(randomizer.nextInt(minerDetails.size()));
     }
 
     @Override
     public List<OrderEntity> getOrdersByCurrency(String currency) {
-        return orderRepository.findByFromCurrency(currency);
+        return orderRepository.findByToCurrency(currency);
     }
 
     @Override
@@ -65,14 +70,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrder(String userId, String id, MultipartFile file) throws Exception {
+    public void updateOrder(String userId, String id, MultipartFile file, String statusBy) throws Exception {
         Optional<OrderEntity> orderEntity = orderRepository.findById(id);
         if (orderEntity.isPresent()) {
             OrderEntity newOrderEntity = orderEntity.get();
+            OrderStatusEntity orderStatusEntity = OrderStatusEntity.builder().orderId(newOrderEntity.getId())
+                    .status(statusBy).updatedBy(userId).build();
+            if (file != null) {
+                String ext = FilenameUtils.getExtension(file.getOriginalFilename());
+                String filename = userId+"-"+newOrderEntity.getId();
+                storageService.store(file, filename);
+                orderStatusEntity.setRefFile(filename+"."+ext);
+            }
+
             newOrderEntity.setStatus(TransferStatusType.RECEIVED);
+            orderStatusRepository.save(orderStatusEntity);
             orderRepository.save(newOrderEntity);
-            if (file != null)
-                storageService.store(file);
         }
     }
 
@@ -88,7 +101,8 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderEntity inbound(Order order, MinerEntity minerEntity) {
         return OrderEntity.builder().amount(order.getAmount())
-                .recipientId(order.getRecipientId()).fromCurrency(order.getFromCurrency())
+                //.recipientId(order.getRecipientId())
+                .fromCurrency(order.getFromCurrency())
                 .toCurrency(order.getToCurrency()).recipientAmount(order.getRecipientAmount())
                 .refId(generateRefId()).status(TransferStatusType.CREATED)
                 .orderDetailsEntity(OrderDetailsEntity.builder().onshoreMinerId(minerEntity).build())

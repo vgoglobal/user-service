@@ -1,5 +1,7 @@
 package de.hey_car.controllers;
 
+//import de.hey_car.config.SessionManager;
+import de.hey_car.dto.Login;
 import de.hey_car.dto.User;
 import de.hey_car.repository.entity.UserEntity;
 import de.hey_car.services.UserService;
@@ -27,13 +29,39 @@ public class UserController {
 
     /**
      * Method to
+     *
      * @return
      */
     @PostMapping(value = "/create")
     public ResponseEntity<UserEntity> createUser(@RequestBody @Valid User user) {
         LOGGER.info("Processing create user ");
-        //userService.createUser(user);
+
         return ResponseEntity.ok().body(userService.createUser(user));
+    }
+
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @PutMapping(value = "/update/{id}")
+    public ResponseEntity<UserEntity> updateUser(@RequestBody @Valid User user, @PathVariable String id) {
+        LOGGER.info("Processing updateUser ");
+        return ResponseEntity.ok().body(userService.createUser(user));
+    }
+
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @PutMapping(value = "/login")
+    public ResponseEntity<UserEntity> userLogin(@RequestBody @Valid Login login) {
+        LOGGER.info("Processing userLogin");
+        UserEntity userEntity = userService.loginUser(login);
+       // String sessionId = SessionManager.create(login.getUserName() + "§" + userEntity.getId());
+      //  LOGGER.info("session created and id " + sessionId);
+        return null;
     }
 
     /**
@@ -42,7 +70,6 @@ public class UserController {
     @PutMapping(value = "/{confirmationCode}/{id}/confirm")
     public ResponseEntity<String> confirmEmail(@PathVariable String confirmationCode, @PathVariable String id) {
         LOGGER.info("Confirming the email ");
-
         userService.confirmEmail(id, confirmationCode);
         return ResponseEntity.ok().body(" Configuration of the email ");
     }

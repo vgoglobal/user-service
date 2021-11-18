@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,7 +64,7 @@ public class OrderController {
     /**
      * Method to
      */
-    @PostMapping(value = "/pick/{userId}/{id}")
+    @PutMapping(value = "/pick/{userId}/{id}")
     public ResponseEntity<String> pickOrder(@PathVariable String userId, @PathVariable String id) {
         LOGGER.info("Processing pickOrder ");
         orderService.pickOrder(userId, id);
@@ -73,20 +74,32 @@ public class OrderController {
     /**
      * Method to
      */
-    @PostMapping(value = "/update/{userId}/{orderId}")
+    //@PostMapping(value = "/update/{userId}/{orderId}")
     public ResponseEntity<String> updateOrderStatus(@PathVariable String userId, @PathVariable String orderId) throws Exception {
         LOGGER.info("Processing confirmOrder ");
-        orderService.updateOrder(userId, orderId, null);
+        orderService.updateOrder(userId, orderId, null, "ONSHORE");
         return ResponseEntity.ok().body("Orders picked");
     }
 
     /**
      * Method to
      */
+    @PutMapping(value = "/update/{userId}/{orderId}/{statusBy}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> userTransferConfirmation(@PathVariable String userId, @PathVariable String orderId,
+           @PathVariable String statusBy, @RequestParam("file") MultipartFile file) throws Exception {
+        LOGGER.info("Processing userTransferConfirmation ");
+        orderService.updateOrder(userId, orderId, file, statusBy);
+        return ResponseEntity.ok().body("Orders updated");
+    }
+
+    /**
+     * Method to
+     */
     @PostMapping(value = "/confirm/{userId}/{orderId}")
-    public ResponseEntity<String> confirmOrder(@PathVariable String userId, @PathVariable String orderId, @RequestParam("file") MultipartFile file) throws Exception {
+    public ResponseEntity<String> confirmOrder(@PathVariable String userId, @PathVariable String orderId,
+           @RequestParam("file") MultipartFile file) throws Exception {
         LOGGER.info("Processing updateOrderStatus ");
-        orderService.updateOrder(userId, orderId, file);
+        orderService.updateOrder(userId, orderId, file, "OFFSHORE");
         return ResponseEntity.ok().body("Orders status updated");
     }
 

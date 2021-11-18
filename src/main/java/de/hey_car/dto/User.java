@@ -18,11 +18,14 @@ public class User {
     @NotNull
     private String lastName;
     @NotNull
-    private String email;
     @Email
+    private String email;
+    @NotNull
+    private String password;
     @NotNull
     private String country;
     @NotNull
     private String address;
     private Long mobile;
+    private Roles roles;
 }

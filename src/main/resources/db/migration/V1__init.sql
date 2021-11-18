@@ -1,13 +1,15 @@
-CREATE TABLE IF NOT EXISTS users
+create TABLE IF NOT EXISTS users
 (
     id character varying  NOT NULL,
     first_name character varying ,
     last_name character varying ,
-    email character varying ,
-    country character varying ,
+    email character varying,
+    password character varying,
+    country character varying,
     address character varying ,
     mobile integer,
     confirmation_code character varying ,
+    role character varying(50),
     created_date timestamp with time zone,
     update_date timestamp with time zone,
     confirmed boolean,
@@ -16,7 +18,22 @@ CREATE TABLE IF NOT EXISTS users
     CONSTRAINT email_uk UNIQUE (email)
 );
 
-CREATE TABLE IF NOT EXISTS wallets
+create TABLE IF NOT EXISTS miner
+(
+    id character varying(255) ,
+    created_date timestamp without time zone NOT NULL,
+    resource_address character varying(255) ,
+    resource_code character varying(255) ,
+    resource_currency character varying(255) ,
+    resource_name character varying(255),
+    resource_number character varying(255) ,
+    resource_type character varying(255) ,
+    update_date timestamp without time zone,
+    user_id character varying(255),
+    CONSTRAINT miner_pkey PRIMARY KEY (id)
+);
+
+create TABLE IF NOT EXISTS wallet
 (
     id character varying NOT NULL,
     mobile integer,
@@ -28,7 +45,7 @@ CREATE TABLE IF NOT EXISTS wallets
     CONSTRAINT wallet_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS country_wallet
+create TABLE IF NOT EXISTS country_wallet
 (
     id character varying  NOT NULL,
     currency character varying ,
@@ -40,7 +57,7 @@ CREATE TABLE IF NOT EXISTS country_wallet
     CONSTRAINT country_wallet_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS exchange_order
+create TABLE IF NOT EXISTS exchange_order
 (
     id character varying,
     amount double precision,
@@ -60,27 +77,7 @@ CREATE TABLE IF NOT EXISTS exchange_order
     PRIMARY KEY (id)
 );
 
---ALTER TABLE exchange_order
-  --  ADD COLUMN onshore_miner character varying(255);
-
---ALTER TABLE exchange_order
-  --  ADD COLUMN offshore_miner character varying(255);
-
---ALTER TABLE exchange_order
-  --  ADD CONSTRAINT onshore_miner FOREIGN KEY (onshore_miner)
-    --REFERENCES public.miner (id)
-    --ON UPDATE NO ACTION
-    --ON DELETE NO ACTION
-    --NOT VALID;
-
---ALTER TABLE exchange_order
-  --  ADD CONSTRAINT offshore_miner FOREIGN KEY (offshore_miner)
-    --REFERENCES public.miner (id)
-    --ON UPDATE NO ACTION
-    --ON DELETE NO ACTION
-    --NOT VALID;
-
-CREATE TABLE IF NOT EXISTS order_details
+create TABLE IF NOT EXISTS order_details
 (
     id character varying NOT NULL,
     order_id character varying(255),
@@ -91,24 +88,38 @@ CREATE TABLE IF NOT EXISTS order_details
     PRIMARY KEY (id),
     CONSTRAINT order_fk FOREIGN KEY (order_id)
         REFERENCES exchange_order (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON update CASCADE
+        ON delete CASCADE
         NOT VALID,
     CONSTRAINT local_miner_fk FOREIGN KEY (onshore_miner_id)
         REFERENCES miner (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON update CASCADE
+        ON delete CASCADE
         NOT VALID,
     CONSTRAINT offshore_miner_fk FOREIGN KEY (offshore_miner_id)
         REFERENCES miner (id) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON update CASCADE
+        ON delete CASCADE
         NOT VALID
 );
 
---ALTER TABLE exchange_order
---    ADD CONSTRAINT order_details FOREIGN KEY (order_details)
---    REFERENCES order_details (id)
---    ON UPDATE NO ACTION
- --   ON DELETE NO ACTION
- --   NOT VALID;
+create TABLE IF NOT EXISTS order_status
+(
+    id character varying NOT NULL,
+    status character varying,
+    order_id character varying,
+    updated_by character varying,
+    create_date timestamp with time zone,
+    update_date timestamp with time zone,
+    PRIMARY KEY (id),
+    CONSTRAINT order_fk FOREIGN KEY (order_id)
+        REFERENCES public.exchange_order (id) MATCH SIMPLE
+        ON update NO ACTION
+        ON delete NO ACTION
+        NOT VALID,
+    CONSTRAINT user_fk FOREIGN KEY (updated_by)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON update NO ACTION
+        ON delete NO ACTION
+        NOT VALID
+);

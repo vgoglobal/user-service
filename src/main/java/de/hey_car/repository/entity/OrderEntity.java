@@ -28,8 +28,10 @@ public class OrderEntity {
     private Double recipientAmount;
     @Column(name = "transfer_fee", nullable = false)
     private Double transferFee;
-    @Column(name = "recipient_id", nullable = false)
-    private String recipientId;
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "recipient_id")
+    //@Column(name = "recipient_id", nullable = false)
+    private RecipientEntity recipientId;
     @Column(name = "user_id", nullable = false)
     private String userId;
     @Column(name = "from_currency", nullable = false)
@@ -51,6 +53,9 @@ public class OrderEntity {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_details")
     private OrderDetailsEntity orderDetailsEntity;
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_id")
+    private List<OrderStatusEntity> orderStatusEntity;
 
     @PrePersist
     public void prePersist() {

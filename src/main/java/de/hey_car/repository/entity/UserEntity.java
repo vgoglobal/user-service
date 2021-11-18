@@ -1,5 +1,6 @@
 package de.hey_car.repository.entity;
 
+import de.hey_car.dto.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,8 @@ public class UserEntity {
     private String lastName;
     @Column(name = "email", nullable = false)
     private String email;
+    @Column(name = "password", nullable = false)
+    private String password;
     @Column(name = "country", nullable = false)
     private String country;
     @Column(name = "address", nullable = false)
@@ -34,6 +37,9 @@ public class UserEntity {
     private String confirmationCode;
     @Column(name = "confirmed")
     private Boolean confirmed;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Roles role;
     @Column(name = "created_date", nullable = false)
     private Instant createdDate;
     @Column(name = "update_date")
