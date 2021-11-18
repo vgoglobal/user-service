@@ -1,7 +1,7 @@
 package de.hey_car.services;
 
 import de.hey_car.dto.Currency;
-import de.hey_car.repository.entity.CurrencyEntity;
+import de.hey_car.entity.CurrencyEntity;
 
 import java.util.List;
 

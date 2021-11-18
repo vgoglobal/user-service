@@ -2,7 +2,7 @@ package de.hey_car.services;
 
 import de.hey_car.dto.Order;
 import de.hey_car.dto.Transfer;
-import de.hey_car.repository.entity.OrderEntity;
+import de.hey_car.entity.OrderEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

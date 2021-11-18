@@ -1,6 +1,5 @@
-package de.hey_car.repository.entity;
+package de.hey_car.entity;
 
-import de.hey_car.dto.MinerResourceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,28 +14,29 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "miner")
-public class MinerEntity {
+@Table(name = "recipient")
+public class RecipientEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String id;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "resource_type", nullable = false)
-    private MinerResourceType resourceType;
-    @Column(name = "resource_name", nullable = false)
-    private String resourceName;
-    @Column(name = "resource_number", nullable = false)
-    private String resourceNumber;
-    @Column(name = "resource_code", nullable = false)
-    private String resourceCode;
-    @Column(name = "resource_address", nullable = false)
-    private String resourceAddress;
-    @Column(name = "resource_currency")
-    private String resourceCurrency;
-    @Column(name = "userId")
+    @Column(name = "name", nullable = false)
+    private String name;
+    @Column(name = "number", nullable = false)
+    private String number;
+    @Column(name = "code", nullable = false)
+    private String code;
+    @Column(name = "currency", nullable = false)
+    private String currency;
+    @Column(name = "institution", nullable = false)
+    private String institution;
+    @Column(name = "institution_type", nullable = false)
+    private String institutionType;
+    @Column(name = "userId", nullable = false)
     private String userId;
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "address", nullable = false)
+    private String address;
+    @Column(name = "create_date")
     private Instant createdDate;
     @Column(name = "update_date")
     private Instant updateDate;

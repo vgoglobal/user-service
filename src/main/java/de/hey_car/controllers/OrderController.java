@@ -2,7 +2,7 @@ package de.hey_car.controllers;
 
 import de.hey_car.dto.Order;
 import de.hey_car.dto.Transfer;
-import de.hey_car.repository.entity.OrderEntity;
+import de.hey_car.entity.OrderEntity;
 import de.hey_car.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;

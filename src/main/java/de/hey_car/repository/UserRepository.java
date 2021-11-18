@@ -1,7 +1,7 @@
 package de.hey_car.repository;
 
 
-import de.hey_car.repository.entity.UserEntity;
+import de.hey_car.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

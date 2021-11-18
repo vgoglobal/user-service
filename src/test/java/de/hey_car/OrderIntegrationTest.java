@@ -8,9 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.hey_car.dto.*;
 import de.hey_car.repository.MinerRepository;
-import de.hey_car.repository.entity.MinerEntity;
-import de.hey_car.repository.entity.OrderEntity;
-import de.hey_car.repository.entity.UserEntity;
+import de.hey_car.entity.MinerEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,10 +31,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import javax.transaction.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j

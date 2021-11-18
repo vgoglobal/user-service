@@ -3,7 +3,7 @@ package de.hey_car.controllers;
 import de.hey_car.dto.CountryWallet;
 import de.hey_car.dto.Wallet;
 import de.hey_car.dto.WalletResponse;
-import de.hey_car.repository.entity.WalletEntity;
+import de.hey_car.entity.WalletEntity;
 import de.hey_car.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

@@ -2,7 +2,7 @@ package de.hey_car.services.impl;
 
 import de.hey_car.dto.Recipient;
 import de.hey_car.repository.RecipientRepository;
-import de.hey_car.repository.entity.RecipientEntity;
+import de.hey_car.entity.RecipientEntity;
 import de.hey_car.services.RecipientService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

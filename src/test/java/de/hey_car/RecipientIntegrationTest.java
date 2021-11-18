@@ -6,11 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import de.hey_car.dto.Miner;
-import de.hey_car.dto.MinerResourceType;
 import de.hey_car.dto.Recipient;
-import de.hey_car.repository.entity.MinerEntity;
-import de.hey_car.repository.entity.RecipientEntity;
+import de.hey_car.entity.RecipientEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.transaction.Transactional;
 
-import static de.hey_car.dto.MinerResourceType.BANK;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j

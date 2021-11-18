@@ -3,7 +3,7 @@ package de.hey_car.services.impl;
 import de.hey_car.dto.Login;
 import de.hey_car.dto.User;
 import de.hey_car.repository.UserRepository;
-import de.hey_car.repository.entity.UserEntity;
+import de.hey_car.entity.UserEntity;
 import de.hey_car.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

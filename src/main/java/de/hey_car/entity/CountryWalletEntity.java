@@ -1,4 +1,4 @@
-package de.hey_car.repository.entity;
+package de.hey_car.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,34 +8,29 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.List;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "wallet")
-public class WalletEntity {
+@Table(name = "country_wallet")
+public class CountryWalletEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String id;
-    @Column(name = "mobile", nullable = false)
-    private Long mobile;
-    @Column(name = "otp", nullable = false)
-    private String otp;
-    @Column(name = "otp_confirmed", nullable = false)
-    private Boolean otpConfirmed;
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "currency", nullable = false)
+    private String currency;
+    @Column(name = "amount", nullable = false)
+    private Double amount;
+    @Column(name = "create_date")
     private Instant createdDate;
     @Column(name = "update_date")
     private Instant updateDate;
-    @Column(name = "user_id")
-    private String userId;
-    @OneToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "wallet_id")
-    private List<CountryWalletEntity> countryWalletEntity;
+    @Column(name = "wallet_id")
+    private String walletId;
+
     @PrePersist
     public void prePersist() {
         Instant now = Instant.now();

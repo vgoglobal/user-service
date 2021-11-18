@@ -1,4 +1,4 @@
-package de.hey_car.repository.entity;
+package de.hey_car.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,24 +14,26 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order_status")
-public class OrderStatusEntity {
+@Table(name = "wallet_transactions")
+public class WalletTransactionsEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     private String id;
-    @Column(name = "order_id", nullable = false)
-    private String orderId;
-    @Column(name = "updated_by", nullable = false)
-    private String updatedBy;
-    @Column(name = "status", nullable = false)
-    private String status;
-    @Column(name = "ref_file", nullable = false)
-    private String refFile;
+    @Column(name = "amount", nullable = false)
+    private String amount;
+    @Column(name = "currency", nullable = false)
+    private Double currency;
+    @Column(name = "trx_type", nullable = false)
+    private Double trxType;
+    @Column(name = "closing_balance", nullable = false)
+    private Double closingBalance;
     @Column(name = "create_date")
     private Instant createdDate;
     @Column(name = "update_date")
     private Instant updateDate;
+    @Column(name = "wallet_id")
+    private String walletId;
 
     @PrePersist
     public void prePersist() {

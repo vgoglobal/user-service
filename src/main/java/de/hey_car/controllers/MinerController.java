@@ -1,7 +1,7 @@
 package de.hey_car.controllers;
 
 import de.hey_car.dto.Miner;
-import de.hey_car.repository.entity.MinerEntity;
+import de.hey_car.entity.MinerEntity;
 import de.hey_car.services.MinerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

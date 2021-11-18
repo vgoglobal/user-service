@@ -2,7 +2,7 @@ package de.hey_car.services;
 
 import de.hey_car.dto.Login;
 import de.hey_car.dto.User;
-import de.hey_car.repository.entity.UserEntity;
+import de.hey_car.entity.UserEntity;
 
 import java.util.Optional;
 

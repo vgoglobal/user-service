@@ -1,7 +1,7 @@
 package de.hey_car.controllers;
 
 import de.hey_car.dto.Currency;
-import de.hey_car.repository.entity.CurrencyEntity;
+import de.hey_car.entity.CurrencyEntity;
 import de.hey_car.services.CurrencyService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

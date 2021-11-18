@@ -1,4 +1,4 @@
-package de.hey_car.repository.entity;
+package de.hey_car.entity;
 
 import de.hey_car.dto.TransferStatusType;
 import lombok.AllArgsConstructor;

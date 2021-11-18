@@ -3,7 +3,7 @@ package de.hey_car.controllers;
 //import de.hey_car.config.SessionManager;
 import de.hey_car.dto.Login;
 import de.hey_car.dto.User;
-import de.hey_car.repository.entity.UserEntity;
+import de.hey_car.entity.UserEntity;
 import de.hey_car.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

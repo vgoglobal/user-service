@@ -1,7 +1,7 @@
 package de.hey_car.controllers;
 
 import de.hey_car.dto.Recipient;
-import de.hey_car.repository.entity.RecipientEntity;
+import de.hey_car.entity.RecipientEntity;
 import de.hey_car.services.RecipientService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
