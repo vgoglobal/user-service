@@ -113,12 +113,12 @@ create TABLE IF NOT EXISTS order_status
     update_date timestamp with time zone,
     PRIMARY KEY (id),
     CONSTRAINT order_fk FOREIGN KEY (order_id)
-        REFERENCES public.exchange_order (id) MATCH SIMPLE
+        REFERENCES exchange_order (id) MATCH SIMPLE
         ON update NO ACTION
         ON delete NO ACTION
         NOT VALID,
     CONSTRAINT user_fk FOREIGN KEY (updated_by)
-        REFERENCES public.users (id) MATCH SIMPLE
+        REFERENCES users (id) MATCH SIMPLE
         ON update NO ACTION
         ON delete NO ACTION
         NOT VALID
