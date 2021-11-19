@@ -1,1 +1,1 @@
-docker build -t solactive-ticks . && docker run --rm -it -p 8000:8080 solactive-ticks:latest &&
+docker build -t exchange . && docker run --rm -it -p 8000:8080 exchange:latest &&
