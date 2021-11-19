@@ -45,7 +45,7 @@ create TABLE IF NOT EXISTS wallet
     CONSTRAINT wallet_pkey PRIMARY KEY (id)
 );
 
-create TABLE IF NOT EXISTS country_wallet
+create TABLE IF NOT EXISTS wallet_details
 (
     id character varying  NOT NULL,
     currency character varying ,
@@ -54,7 +54,7 @@ create TABLE IF NOT EXISTS country_wallet
     update_date timestamp with time zone,
     wallet_id character varying ,
     wallet_fk character varying(255) ,
-    CONSTRAINT country_wallet_pkey PRIMARY KEY (id)
+    CONSTRAINT wallet_details_pkey PRIMARY KEY (id)
 );
 
 create TABLE IF NOT EXISTS exchange_order
@@ -122,4 +122,19 @@ create TABLE IF NOT EXISTS order_status
         ON update NO ACTION
         ON delete NO ACTION
         NOT VALID
+);
+
+CREATE TABLE IF NOT EXISTS address
+(
+    id character varying NOT NULL,
+    flat_no character varying(10),
+    address1 character varying(100),
+    address2 character varying(100),
+    city character varying(100),
+    state character varying(100),
+    country character varying(100),
+    pin character varying(15),
+    created_date timestamp with time zone,
+    update_date timestamp with time zone,
+    PRIMARY KEY (id)
 );
