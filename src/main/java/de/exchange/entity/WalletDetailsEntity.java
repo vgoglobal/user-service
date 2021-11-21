@@ -25,11 +25,12 @@ public class WalletDetailsEntity {
     private String currency;
     @Column(name = "amount", nullable = false)
     private Double amount;
-    @Column(name = "hold_amount", nullable = false)
+    @Column(name = "hold_amount", nullable = true)
     private Double holdAmount;
     @Column(name = "base_currency", nullable = false)
     private Boolean baseCurrency;
     @Column(name = "resource_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private ResourceType resourceType;
     @Column(name = "create_date")
     private Instant createdDate;

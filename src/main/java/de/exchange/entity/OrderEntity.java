@@ -28,9 +28,9 @@ public class OrderEntity {
     private Double recipientAmount;
     @Column(name = "transfer_fee", nullable = false)
     private Double transferFee;
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "recipient_id")
-    private List<RecipientEntity> recipientId;
+    private RecipientEntity recipientId;
     @Column(name = "user_id", nullable = false)
     private String userId;
     @Column(name = "from_currency", nullable = false)
@@ -40,6 +40,7 @@ public class OrderEntity {
     @Column(name = "ref_id", nullable = false)
     private String refId;
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TransferStatusType status;
     @Column(name = "transfer_ref", nullable = true)
     private String transferRef;

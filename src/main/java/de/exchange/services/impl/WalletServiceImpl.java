@@ -77,10 +77,10 @@ public class WalletServiceImpl implements WalletService {
                 Double balance = walletDetailsEntity1.getAmount() + walletDetails.getAmount();
                 walletDetailsEntity1.setAmount(balance);
                 walletDetailsRepository.save(walletDetailsEntity1);
-                walletTransactionsRepository.save(WalletTransactionsEntity.builder().amount(walletDetails.getAmount()).walletId(id).build());
+              //  walletTransactionsRepository.save(WalletTransactionsEntity.builder().amount(walletDetails.getAmount()).walletId(id).build());
             } else {
-                walletDetailsRepository.save(prepareCountryWallet(walletDetails));
-                walletTransactionsRepository.save(WalletTransactionsEntity.builder().amount(walletDetails.getAmount()).walletId(id).build());
+                walletDetailsRepository.save(prepareWalletDetails(walletDetails));
+               // walletTransactionsRepository.save(WalletTransactionsEntity.builder().amount(walletDetails.getAmount()).walletId(id).build());
             }
         }
     }
@@ -96,7 +96,7 @@ public class WalletServiceImpl implements WalletService {
         return WalletResponse.builder()
             .mobile(walletEntity.getMobile())
             .userId(walletEntity.getUserId())
-            .walletDetails(prepareCountryWallet(walletEntity))
+            .walletDetails(prepareWalletDetails(walletEntity))
             .walletId(walletEntity.getId())
             .build();
     }
@@ -119,7 +119,7 @@ public class WalletServiceImpl implements WalletService {
         wallet.setOtpConfirmed(false);
     }
 
-    private List<WalletDetails> prepareCountryWallet(WalletEntity wallet) {
+    private List<WalletDetails> prepareWalletDetails(WalletEntity wallet) {
         return wallet.getWalletDetailsEntity().stream()
                 .map(p -> WalletDetails.builder()
                         .amount(p.getAmount()).currency(p.getCurrency())
@@ -127,9 +127,11 @@ public class WalletServiceImpl implements WalletService {
 
     }
 
-    private WalletDetailsEntity prepareCountryWallet(WalletDetails walletDetails) {
+    private WalletDetailsEntity prepareWalletDetails(WalletDetails walletDetails) {
         return WalletDetailsEntity.builder().walletId(walletDetails.getWalletId())
                 .currency(walletDetails.getCurrency())
+                .baseCurrency(walletDetails.getBaseCurrency())
+                .resourceType(walletDetails.getResourceType())
                 .amount(walletDetails.getAmount()).build();
 
     }

@@ -5,9 +5,7 @@ import de.exchange.dto.OrderUpdate;
 import de.exchange.dto.Transfer;
 import de.exchange.dto.TransferStatusType;
 import de.exchange.entity.*;
-import de.exchange.repository.OrderRepository;
-import de.exchange.repository.MinerRepository;
-import de.exchange.repository.WalletRepository;
+import de.exchange.repository.*;
 import de.exchange.services.OrderService;
 import de.exchange.services.StorageService;
 import lombok.AllArgsConstructor;
@@ -27,11 +25,15 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderRepository orderRepository;
     @Autowired
+    OrderDetailsRepository orderDetailsRepository;
+    @Autowired
     MinerRepository minerRepository;
     @Autowired
     StorageService storageService;
     @Autowired
     WalletRepository walletRepository;
+    @Autowired
+    RecipientRepository recipientRepository;
 
     @Override
     public Transfer createExchangeOrder(Order order) {
@@ -39,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
         List<MinerEntity> minerDetails = minerRepository.findMiners(order.getFromCurrency(), order.getAmount());
         MinerEntity miner = selectMiner(minerDetails);
         OrderEntity orderEntity = orderRepository.save(inbound(order, miner));
+        OrderDetailsEntity orderDetailsEntity = orderDetailsRepository.save(OrderDetailsEntity.builder().sourceMinerId(miner).orderId(orderEntity.getId()).status(TransferStatusType.CREATED).build());
+        orderEntity.setOrderDetailsEntity(orderDetailsEntity);
         return outbound(selectMiner(minerDetails), orderEntity);
     }
 
@@ -115,12 +119,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderEntity inbound(Order order, MinerEntity minerEntity) {
+
         return OrderEntity.builder().amount(order.getAmount())
-                //.recipientId(order.getRecipientId())
+                .recipientId(recipientRepository.findById(order.getRecipientId()).get())
                 .fromCurrency(order.getFromCurrency())
                 .toCurrency(order.getToCurrency()).recipientAmount(order.getRecipientAmount())
                 .refId(generateRefId()).status(TransferStatusType.CREATED)
-                .orderDetailsEntity(OrderDetailsEntity.builder().sourceMinerId(minerEntity).build())
                 .userId(order.getUserId())
                 .transferFee(order.getTransferFee()).build();
     }

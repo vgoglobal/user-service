@@ -42,6 +42,7 @@ public class OrderDetailsEntity {
     @Column(name = "remarks")
     private String remarks;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private TransferStatusType status;
     @Column(name = "ref_file")
     private String refFile;

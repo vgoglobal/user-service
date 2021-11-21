@@ -13,4 +13,6 @@ public class WalletDetails {
     private String currency;
     private Double amount;
     private String walletId;
+    private Boolean baseCurrency;
+    private ResourceType resourceType;
 }

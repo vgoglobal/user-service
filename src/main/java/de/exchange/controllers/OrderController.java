@@ -36,7 +36,7 @@ public class OrderController {
      */
     @PostMapping(value = "/exchange/create")
     public ResponseEntity<Transfer> createExchangeOrder(@RequestBody @Valid Order order) {
-        LOGGER.info("Processing createExchangeOrder ");
+        LOGGER.info("Processing createExchangeOrder "+order.getFromCurrency() + " - "+order.getAmount());
         return ResponseEntity.ok().body(orderService.createExchangeOrder(order));
     }
 
@@ -75,7 +75,7 @@ public class OrderController {
     /**
      * Method to
      */
-    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/update")
     public ResponseEntity<String> updateOrder(@RequestBody @Valid OrderUpdate orderUpdate, @RequestParam("file") MultipartFile file) throws Exception {
         LOGGER.info("Processing userTransferConfirmation ");
         orderService.updateOrder(orderUpdate, file);
