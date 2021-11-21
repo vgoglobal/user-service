@@ -30,6 +30,7 @@ create TABLE IF NOT EXISTS miner
     resource_type character varying(255) ,
     update_date timestamp without time zone,
     user_id character varying(255),
+    miner_services text[],
     CONSTRAINT miner_pkey PRIMARY KEY (id)
 );
 
@@ -39,9 +40,9 @@ create TABLE IF NOT EXISTS wallet
     mobile integer,
     otp character varying,
     otp_confirmed boolean,
+    user_id character varying,
     created_date timestamp with time zone,
     update_date timestamp with time zone,
-    user_id character varying,
     CONSTRAINT wallet_pkey PRIMARY KEY (id)
 );
 
@@ -50,11 +51,30 @@ create TABLE IF NOT EXISTS wallet_details
     id character varying  NOT NULL,
     currency character varying ,
     amount double precision,
+    hold_amount double precision,
+    base_currency boolean,
+    resource_type character varying,
     create_date timestamp with time zone,
     update_date timestamp with time zone,
-    wallet_id character varying ,
-    wallet_fk character varying(255) ,
+    wallet_id character varying,
     CONSTRAINT wallet_details_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS public.recipient
+(
+    id character varying(255),
+    address character varying(255),
+    code character varying(255),
+    create_date timestamp without time zone,
+    currency character varying(255),
+    institution character varying(255),
+    institution_type character varying(255),
+    name character varying(255),
+    "number" character varying(255),
+    update_date timestamp without time zone,
+    user_id character varying(255),
+    CONSTRAINT recipient_pkey PRIMARY KEY (id)
 );
 
 create TABLE IF NOT EXISTS exchange_order
@@ -70,57 +90,47 @@ create TABLE IF NOT EXISTS exchange_order
     ref_id character varying,
     status character varying,
     transfer_ref character varying,
-    picked_by character varying,
+    user_file_upload character varying,
     create_date time with time zone,
     update_date timestamp with time zone,
     order_details character varying,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT recipeint_fk FOREIGN KEY (recipient_id)
+        REFERENCES recipient (id)
+        ON update CASCADE
+        ON delete CASCADE
+        NOT VALID
 );
 
 create TABLE IF NOT EXISTS order_details
 (
     id character varying NOT NULL,
     order_id character varying(255),
-    onshore_miner_id character varying(255),
-    offshore_miner_id character varying(255),
+    source_miner_id character varying(255),
+    target_miner_id character varying(255),
     create_date timestamp with time zone,
     update_date timestamp with time zone,
-    PRIMARY KEY (id),
-    CONSTRAINT order_fk FOREIGN KEY (order_id)
-        REFERENCES exchange_order (id) MATCH SIMPLE
-        ON update CASCADE
-        ON delete CASCADE
-        NOT VALID,
-    CONSTRAINT local_miner_fk FOREIGN KEY (onshore_miner_id)
-        REFERENCES miner (id) MATCH SIMPLE
-        ON update CASCADE
-        ON delete CASCADE
-        NOT VALID,
-    CONSTRAINT offshore_miner_fk FOREIGN KEY (offshore_miner_id)
-        REFERENCES miner (id) MATCH SIMPLE
-        ON update CASCADE
-        ON delete CASCADE
-        NOT VALID
-);
-
-create TABLE IF NOT EXISTS order_status
-(
-    id character varying NOT NULL,
+    pick_date timestamp with time zone,
+    delivery_date timestamp with time zone,
+    canceled_date timestamp with time zone,
+    remarks character varying,
     status character varying,
-    order_id character varying,
-    updated_by character varying,
-    create_date timestamp with time zone,
-    update_date timestamp with time zone,
+    delivery_ref character varying,
     PRIMARY KEY (id),
     CONSTRAINT order_fk FOREIGN KEY (order_id)
         REFERENCES exchange_order (id) MATCH SIMPLE
-        ON update NO ACTION
-        ON delete NO ACTION
+        ON update CASCADE
+        ON delete CASCADE
         NOT VALID,
-    CONSTRAINT user_fk FOREIGN KEY (updated_by)
-        REFERENCES users (id) MATCH SIMPLE
-        ON update NO ACTION
-        ON delete NO ACTION
+    CONSTRAINT local_miner_fk FOREIGN KEY (source_miner_id)
+        REFERENCES miner (id) MATCH SIMPLE
+        ON update CASCADE
+        ON delete CASCADE
+        NOT VALID,
+    CONSTRAINT offshore_miner_fk FOREIGN KEY (target_miner_id)
+        REFERENCES miner (id) MATCH SIMPLE
+        ON update CASCADE
+        ON delete CASCADE
         NOT VALID
 );
 

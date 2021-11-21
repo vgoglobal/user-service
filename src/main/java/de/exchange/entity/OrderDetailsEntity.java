@@ -1,5 +1,6 @@
 package de.exchange.entity;
 
+import de.exchange.dto.TransferStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,17 +24,27 @@ public class OrderDetailsEntity {
     @Column(name = "order_id", nullable = false)
     private String orderId;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "onshore_miner_id")
-    //@Column(name = "onshore_miner_id", nullable = false)
-    private MinerEntity onshoreMinerId;
+    @JoinColumn(name = "source_miner_id")
+    private MinerEntity sourceMinerId;
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "offshore_miner_id")
-  //  @Column(name = "offshore_miner_id", nullable = false)
-    private MinerEntity offshoreMinerId;
+    @JoinColumn(name = "target_miner_id")
+    private MinerEntity targetMinerId;
     @Column(name = "create_date")
     private Instant createdDate;
     @Column(name = "update_date")
     private Instant updateDate;
+    @Column(name = "pick_date")
+    private Instant pickDate;
+    @Column(name = "delivery_date")
+    private Instant deliveryDate;
+    @Column(name = "cancelled_date")
+    private Instant cancelledDate;
+    @Column(name = "remarks")
+    private String remarks;
+    @Column(name = "status")
+    private TransferStatusType status;
+    @Column(name = "ref_file")
+    private String refFile;
 
     @PrePersist
     public void prePersist() {

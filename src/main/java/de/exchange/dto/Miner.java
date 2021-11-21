@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Builder
 @Data
@@ -25,4 +26,5 @@ public class Miner {
     @NotNull
     private String userId;
     private MinerAgency minerAgency;
+    private List serviceType;// deposit, pickup, transfer
 }

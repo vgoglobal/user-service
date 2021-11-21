@@ -92,6 +92,13 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-52 -->
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-52</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+
         <!-- Swagger dependencies -->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -249,7 +256,7 @@
                 </executions>
                 <configuration>
                     <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5432/miner</url>
+                    <url>jdbc:postgresql://localhost:5432/miner1</url>
                     <user>postgres</user>
                     <password>password</password>
                     <baselineOnMigrate>true</baselineOnMigrate>

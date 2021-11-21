@@ -1,11 +1,15 @@
 package de.exchange.entity;
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import de.exchange.dto.ResourceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -16,6 +20,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity
 @Table(name = "miner")
+@TypeDefs({
+        @TypeDef(
+                name = "string-array",
+                typeClass = StringArrayType.class
+        )
+})
 public class MinerEntity {
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -45,7 +55,12 @@ public class MinerEntity {
     private Instant createdDate;
     @Column(name = "update_date")
     private Instant updateDate;
-
+    @Type( type = "string-array" )
+    @Column(
+            name = "miner_services",
+            columnDefinition = "text[]"
+    )
+    private String[] minerServices;
     @PrePersist
     public void prePersist() {
         Instant now = Instant.now();

@@ -27,6 +27,8 @@ public class WalletDetailsEntity {
     private Double amount;
     @Column(name = "hold_amount", nullable = false)
     private Double holdAmount;
+    @Column(name = "base_currency", nullable = false)
+    private Boolean baseCurrency;
     @Column(name = "resource_type", nullable = false)
     private ResourceType resourceType;
     @Column(name = "create_date")

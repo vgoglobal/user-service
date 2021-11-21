@@ -33,6 +33,11 @@ public class MinerServiceImpl implements MinerService {
         return minerRepository.findAll();
     }
 
+    @Override
+    public List<MinerEntity> getResourceByCurrency(String currency) {
+        return minerRepository.findByResourceCurrency(currency);
+    }
+
     private MinerEntity inbound(Miner miner) {
         return MinerEntity.builder().resourceType(miner.getResourceType())
                 .resourceAddress(miner.getResourceAddress())

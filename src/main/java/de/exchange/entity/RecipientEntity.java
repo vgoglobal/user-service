@@ -22,7 +22,6 @@ public class RecipientEntity {
     private String id;
     @Column(name = "name", nullable = false)
     private String name;
-
     @Column(name = "account_number", nullable = false)
     private String number;
     @Column(name = "account_code", nullable = true)

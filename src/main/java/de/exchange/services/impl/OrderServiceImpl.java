@@ -1,15 +1,13 @@
 package de.exchange.services.impl;
 
 import de.exchange.dto.Order;
+import de.exchange.dto.OrderUpdate;
 import de.exchange.dto.Transfer;
 import de.exchange.dto.TransferStatusType;
+import de.exchange.entity.*;
 import de.exchange.repository.OrderRepository;
 import de.exchange.repository.MinerRepository;
-import de.exchange.repository.OrderStatusRepository;
-import de.exchange.entity.OrderDetailsEntity;
-import de.exchange.entity.OrderEntity;
-import de.exchange.entity.MinerEntity;
-import de.exchange.entity.OrderStatusEntity;
+import de.exchange.repository.WalletRepository;
 import de.exchange.services.OrderService;
 import de.exchange.services.StorageService;
 import lombok.AllArgsConstructor;
@@ -33,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     StorageService storageService;
     @Autowired
-    OrderStatusRepository orderStatusRepository;
+    WalletRepository walletRepository;
 
     @Override
     public Transfer createExchangeOrder(Order order) {
@@ -61,31 +59,48 @@ public class OrderServiceImpl implements OrderService {
         if (orderEntity.isPresent()) {
             OrderEntity newOrderEntity = orderEntity.get();
             OrderDetailsEntity orderDetailsEntity = newOrderEntity.getOrderDetailsEntity();
-            orderDetailsEntity.setOffshoreMinerId(minerRepository.findByUserId(userId));
+            orderDetailsEntity.setTargetMinerId(minerRepository.findByUserId(userId));
             newOrderEntity.setOrderDetailsEntity(orderDetailsEntity);
-            newOrderEntity.setPickedBy(userId);
             newOrderEntity.setStatus(TransferStatusType.IN_PROGRESS);
             orderRepository.save(newOrderEntity);
         }
     }
 
     @Override
-    public void updateOrder(String userId, String id, MultipartFile file, String statusBy) throws Exception {
-        Optional<OrderEntity> orderEntity = orderRepository.findById(id);
+    public void updateOrder(OrderUpdate orderUpdate, MultipartFile file) throws Exception {
+        Optional<OrderEntity> orderEntity = orderRepository.findById(orderUpdate.getOrderId());
         if (orderEntity.isPresent()) {
             OrderEntity newOrderEntity = orderEntity.get();
-            OrderStatusEntity orderStatusEntity = OrderStatusEntity.builder().orderId(newOrderEntity.getId())
-                    .status(statusBy).updatedBy(userId).build();
+            OrderDetailsEntity orderDetailsEntity = newOrderEntity.getOrderDetailsEntity();
+            orderDetailsEntity.setTargetMinerId(minerRepository.findByUserId(orderUpdate.getUserId()));
+            orderDetailsEntity.setSourceMinerId(minerRepository.findByUserId(orderUpdate.getUserId()));
+            orderDetailsEntity.setRemarks(orderUpdate.getRemarks());
             if (file != null) {
                 String ext = FilenameUtils.getExtension(file.getOriginalFilename());
-                String filename = userId+"-"+newOrderEntity.getId();
+                String filename = orderUpdate.getUserId() + "-" + newOrderEntity.getId();
                 storageService.store(file, filename);
-                orderStatusEntity.setRefFile(filename+"."+ext);
+                orderDetailsEntity.setRefFile(filename + "." + ext);
             }
-
-            newOrderEntity.setStatus(TransferStatusType.RECEIVED);
-            orderStatusRepository.save(orderStatusEntity);
+            updateOrderStatusDate(orderDetailsEntity, orderUpdate.getStatus());
+            newOrderEntity.setOrderDetailsEntity(orderDetailsEntity);
+            newOrderEntity.setStatus(orderUpdate.getStatus());
             orderRepository.save(newOrderEntity);
+        }
+    }
+
+    private void updateOrderStatusDate(OrderDetailsEntity orderDetailsEntity, TransferStatusType statusType) {
+        switch (statusType) {
+            case PICKED:
+                orderDetailsEntity.setPickDate(Instant.now());
+            case IN_PROGRESS:
+                orderDetailsEntity.setUpdateDate(Instant.now());
+            case DELIVERED:
+                orderDetailsEntity.setDeliveryDate(Instant.now());
+            case CANCELLED:
+                orderDetailsEntity.setCancelledDate(Instant.now());
+        }
+        if (TransferStatusType.PICKED.equals(statusType)) {
+            orderDetailsEntity.setPickDate(Instant.now());
         }
     }
 
@@ -105,13 +120,25 @@ public class OrderServiceImpl implements OrderService {
                 .fromCurrency(order.getFromCurrency())
                 .toCurrency(order.getToCurrency()).recipientAmount(order.getRecipientAmount())
                 .refId(generateRefId()).status(TransferStatusType.CREATED)
-                .orderDetailsEntity(OrderDetailsEntity.builder().onshoreMinerId(minerEntity).build())
+                .orderDetailsEntity(OrderDetailsEntity.builder().sourceMinerId(minerEntity).build())
                 .userId(order.getUserId())
                 .transferFee(order.getTransferFee()).build();
     }
 
     private Transfer outbound(MinerEntity minerEntity, OrderEntity exchangeOrder) {
-
+        Optional<WalletEntity> walletEntity = walletRepository.findByUserId(minerEntity.getUserId());
+        if (walletEntity.isPresent()) {
+            WalletEntity newWalletEntity = walletEntity.get();
+            List<WalletDetailsEntity> walletDetailsList = newWalletEntity.getWalletDetailsEntity();
+            Optional<WalletDetailsEntity> walletDetailsEntity = newWalletEntity.getWalletDetailsEntity().stream().filter(p -> exchangeOrder.getFromCurrency().equals(p.getBaseCurrency())).findAny();
+            if (walletDetailsEntity.isPresent()) {
+                WalletDetailsEntity newWalletDetailsEntity = walletDetailsEntity.get();
+                newWalletDetailsEntity.setHoldAmount(exchangeOrder.getAmount());
+                walletDetailsList.add(newWalletDetailsEntity);
+                newWalletEntity.setWalletDetailsEntity(walletDetailsList);
+                walletRepository.save(newWalletEntity);
+            }
+        }
         return Transfer.builder().orderId(exchangeOrder.getId()).resourceType(minerEntity.getResourceType()).refId(exchangeOrder.getRefId())
                 .resourceAddress(minerEntity.getResourceAddress()).resourceCode(minerEntity.getResourceCode())
                 .resourceCurrency(minerEntity.getResourceCurrency()).resourceName(minerEntity.getResourceName())

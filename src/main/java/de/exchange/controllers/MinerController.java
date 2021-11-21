@@ -30,7 +30,7 @@ public class MinerController {
      *
      * @return
      */
-    @PostMapping(value = "/resources/create")
+    @PostMapping(value = "/create")
     public ResponseEntity<MinerEntity> createResource(@RequestBody @Valid Miner miner) {
         LOGGER.info("Processing create resource locations ");
         return ResponseEntity.ok().body(minerService.createResource(miner));
@@ -40,7 +40,7 @@ public class MinerController {
     /**
      * Method to
      */
-    @GetMapping(value = "/resources/{id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<MinerEntity> getResource(@PathVariable String id) {
         return ResponseEntity.ok().body(minerService.getResource(id));
     }
@@ -53,5 +53,15 @@ public class MinerController {
     @GetMapping(value = "/")
     public ResponseEntity<List<MinerEntity>> getAll() {
         return ResponseEntity.ok().body(minerService.getAll());
+    }
+
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @GetMapping(value = "/currency/{currency}")
+    public ResponseEntity<List<MinerEntity>> getByCurrency(@PathVariable String currency) {
+        return ResponseEntity.ok().body(minerService.getResourceByCurrency(currency));
     }
 }

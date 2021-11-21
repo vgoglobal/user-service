@@ -1,6 +1,7 @@
 package de.exchange.controllers;
 
 import de.exchange.dto.Order;
+import de.exchange.dto.OrderUpdate;
 import de.exchange.dto.Transfer;
 import de.exchange.entity.OrderEntity;
 import de.exchange.services.OrderService;
@@ -74,33 +75,11 @@ public class OrderController {
     /**
      * Method to
      */
-    //@PostMapping(value = "/update/{userId}/{orderId}")
-    public ResponseEntity<String> updateOrderStatus(@PathVariable String userId, @PathVariable String orderId) throws Exception {
-        LOGGER.info("Processing confirmOrder ");
-        orderService.updateOrder(userId, orderId, null, "ONSHORE");
-        return ResponseEntity.ok().body("Orders picked");
-    }
-
-    /**
-     * Method to
-     */
-    @PutMapping(value = "/update/{userId}/{orderId}/{statusBy}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> userTransferConfirmation(@PathVariable String userId, @PathVariable String orderId,
-           @PathVariable String statusBy, @RequestParam("file") MultipartFile file) throws Exception {
+    @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateOrder(@RequestBody @Valid OrderUpdate orderUpdate, @RequestParam("file") MultipartFile file) throws Exception {
         LOGGER.info("Processing userTransferConfirmation ");
-        orderService.updateOrder(userId, orderId, file, statusBy);
+        orderService.updateOrder(orderUpdate, file);
         return ResponseEntity.ok().body("Orders updated");
-    }
-
-    /**
-     * Method to
-     */
-    @PostMapping(value = "/confirm/{userId}/{orderId}")
-    public ResponseEntity<String> confirmOrder(@PathVariable String userId, @PathVariable String orderId,
-           @RequestParam("file") MultipartFile file) throws Exception {
-        LOGGER.info("Processing updateOrderStatus ");
-        orderService.updateOrder(userId, orderId, file, "OFFSHORE");
-        return ResponseEntity.ok().body("Orders status updated");
     }
 
     /**
