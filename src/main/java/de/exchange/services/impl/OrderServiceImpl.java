@@ -1,9 +1,6 @@
 package de.exchange.services.impl;
 
-import de.exchange.dto.Order;
-import de.exchange.dto.OrderUpdate;
-import de.exchange.dto.Transfer;
-import de.exchange.dto.TransferStatusType;
+import de.exchange.dto.*;
 import de.exchange.entity.*;
 import de.exchange.repository.*;
 import de.exchange.services.OrderService;
@@ -41,9 +38,14 @@ public class OrderServiceImpl implements OrderService {
         List<MinerEntity> minerDetails = minerRepository.findMiners(order.getFromCurrency(), order.getAmount());
         MinerEntity miner = selectMiner(minerDetails);
         OrderEntity orderEntity = orderRepository.save(inbound(order, miner));
-        OrderDetailsEntity orderDetailsEntity = orderDetailsRepository.save(OrderDetailsEntity.builder().sourceMinerId(miner).orderId(orderEntity.getId()).status(TransferStatusType.CREATED).build());
-        orderEntity.setOrderDetailsEntity(orderDetailsEntity);
-        return outbound(selectMiner(minerDetails), orderEntity);
+        OrderDetailsEntity orderDetailsEntity = OrderDetailsEntity.builder()
+                .sourceMinerId(miner)
+                .orderId(orderEntity.getId())
+                .status(TransferStatusType.CREATED)
+                .build();
+        OrderDetailsEntity orderDetailsEntityNew = orderDetailsRepository.save(orderDetailsEntity);
+        orderEntity.setOrderDetailsEntity(orderDetailsEntityNew);
+        return outbound(miner, orderEntity);
     }
 
     private MinerEntity selectMiner(List<MinerEntity> minerDetails) {
@@ -72,39 +74,53 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateOrder(OrderUpdate orderUpdate, MultipartFile file) throws Exception {
+        Roles role = Roles.USER; // TODO need to read it from session
         Optional<OrderEntity> orderEntity = orderRepository.findById(orderUpdate.getOrderId());
         if (orderEntity.isPresent()) {
             OrderEntity newOrderEntity = orderEntity.get();
             OrderDetailsEntity orderDetailsEntity = newOrderEntity.getOrderDetailsEntity();
-            orderDetailsEntity.setTargetMinerId(minerRepository.findByUserId(orderUpdate.getUserId()));
-            orderDetailsEntity.setSourceMinerId(minerRepository.findByUserId(orderUpdate.getUserId()));
+            if(orderDetailsEntity == null) {
+                orderDetailsEntity = OrderDetailsEntity.builder().orderId(orderUpdate.getOrderId()).build();
+            }
+            MinerEntity minerEntity = minerRepository.findByUserId(orderUpdate.getUserId());
+            orderDetailsEntity.setOrderId(orderUpdate.getOrderId());
+            orderDetailsEntity.setSourceMinerId(minerEntity);
             orderDetailsEntity.setRemarks(orderUpdate.getRemarks());
             if (file != null) {
                 String ext = FilenameUtils.getExtension(file.getOriginalFilename());
                 String filename = orderUpdate.getUserId() + "-" + newOrderEntity.getId();
                 storageService.store(file, filename);
-                orderDetailsEntity.setRefFile(filename + "." + ext);
+                if (role.equals(Roles.USER)) {
+                    newOrderEntity.setUserFileUpload(filename + "." + ext);
+                    newOrderEntity.setStatus(TransferStatusType.USER_TRANSFERRED);
+                    orderDetailsEntity.setStatus(TransferStatusType.USER_TRANSFERRED);
+                } else {
+                    orderDetailsEntity.setRefFile(filename + "." + ext);
+                }
             }
-            updateOrderStatusDate(orderDetailsEntity, orderUpdate.getStatus());
+            if (orderUpdate.getStatus() != null) {
+                updateOrderStatusDate(orderDetailsEntity, orderUpdate.getStatus(), orderUpdate.getUserId());
+            }
             newOrderEntity.setOrderDetailsEntity(orderDetailsEntity);
-            newOrderEntity.setStatus(orderUpdate.getStatus());
             orderRepository.save(newOrderEntity);
         }
     }
 
-    private void updateOrderStatusDate(OrderDetailsEntity orderDetailsEntity, TransferStatusType statusType) {
+    private void updateOrderStatusDate(OrderDetailsEntity orderDetailsEntity, TransferStatusType statusType, String userId) {
         switch (statusType) {
             case PICKED:
                 orderDetailsEntity.setPickDate(Instant.now());
+                orderDetailsEntity.setTargetMinerId(minerRepository.findByUserId(userId));
+                break;
             case IN_PROGRESS:
                 orderDetailsEntity.setUpdateDate(Instant.now());
+                break;
             case DELIVERED:
                 orderDetailsEntity.setDeliveryDate(Instant.now());
+                break;
             case CANCELLED:
                 orderDetailsEntity.setCancelledDate(Instant.now());
-        }
-        if (TransferStatusType.PICKED.equals(statusType)) {
-            orderDetailsEntity.setPickDate(Instant.now());
+                break;
         }
     }
 

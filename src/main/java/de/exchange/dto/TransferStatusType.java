@@ -9,5 +9,6 @@ public enum TransferStatusType {
     RECEIVED,
     CANCELLED,
     FAILED,
-    DELIVERED
+    DELIVERED,
+    USER_TRANSFERRED
 }

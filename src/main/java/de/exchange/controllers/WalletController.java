@@ -31,7 +31,7 @@ public class WalletController {
      *
      * @return
      */
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/")
     public ResponseEntity<WalletEntity> createWallet(@RequestBody @Valid Wallet wallet) {
         LOGGER.info("Processing create wallet ");
         return ResponseEntity.ok().body(walletService.createWallet(wallet));

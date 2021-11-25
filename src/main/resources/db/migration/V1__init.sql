@@ -148,3 +148,39 @@ CREATE TABLE IF NOT EXISTS address
     update_date timestamp with time zone,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS complaints
+(
+    id character varying NOT NULL,
+    order_id character varying,
+    user_id character varying,
+    subject character varying,
+    comments character varying,
+    status boolean,
+    create_date timestamp with time zone,
+    update_date timestamp with time zone,
+    resolved_by character varying,
+    CONSTRAINT complaint_pk PRIMARY KEY (id),
+    CONSTRAINT "order" FOREIGN KEY (order_id)
+        REFERENCES exchange_order (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT "user" FOREIGN KEY (user_id)
+        REFERENCES users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+);
+
+CREATE TABLE IF NOT EXISTS tax
+(
+    id character varying NOT NULL,
+    amount_percent double precision,
+    currency character varying(10) NOT NULL,
+    amount double precision,
+    created_date timestamp with time zone,
+    update_date timestamp with time zone,
+
+    PRIMARY KEY (id)
+);

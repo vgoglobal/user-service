@@ -30,12 +30,22 @@ public class MinerController {
      *
      * @return
      */
-    @PostMapping(value = "/create")
-    public ResponseEntity<MinerEntity> createResource(@RequestBody @Valid Miner miner) {
+    @PostMapping(value = "/")
+    public ResponseEntity<MinerEntity> createMiner(@RequestBody @Valid Miner miner) {
         LOGGER.info("Processing create resource locations ");
         return ResponseEntity.ok().body(minerService.createResource(miner));
     }
 
+    /**
+     * Method to
+     *
+     * @return
+     */
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<MinerEntity> updateMiner(@RequestBody @Valid Miner miner, @PathVariable(name = "id") String id) {
+        LOGGER.info("Processing create resource locations ");
+        return ResponseEntity.ok().body(minerService.createResource(miner));
+    }
 
     /**
      * Method to

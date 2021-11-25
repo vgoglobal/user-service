@@ -28,7 +28,7 @@ public class CurrencyController {
     /**
      * Method to
      */
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/")
     public ResponseEntity<String> createResource(@RequestBody @Valid Currency currency) {
         LOGGER.info("Processing create resource locations ");
         currencyService.createExchange(currency);
@@ -47,7 +47,7 @@ public class CurrencyController {
     /**
      * Method to
      */
-    @GetMapping(value = "/currencies")
+    @GetMapping(value = "/")
     public ResponseEntity<List<CurrencyEntity>> getAll() {
         return ResponseEntity.ok().body(currencyService.getAll());
     }

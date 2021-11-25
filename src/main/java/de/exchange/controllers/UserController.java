@@ -32,7 +32,7 @@ public class UserController {
      *
      * @return
      */
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/")
     public ResponseEntity<UserEntity> createUser(@RequestBody @Valid User user) {
         LOGGER.info("Processing create user ");
         return ResponseEntity.ok().body(userService.createUser(user));
@@ -43,10 +43,10 @@ public class UserController {
      *
      * @return
      */
-    @PutMapping(value = "/update/{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<UserEntity> updateUser(@RequestBody @Valid User user, @PathVariable String id) {
         LOGGER.info("Processing updateUser ");
-        return ResponseEntity.ok().body(userService.createUser(user));
+        return ResponseEntity.ok().body(userService.updateUser(user, id));
     }
 
     /**

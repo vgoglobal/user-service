@@ -10,4 +10,5 @@ public interface MinerService {
     MinerEntity getResource(String id);
     List<MinerEntity> getAll();
     List<MinerEntity> getResourceByCurrency(String currency);
+    MinerEntity updateResource(Miner miner, String id);
 }

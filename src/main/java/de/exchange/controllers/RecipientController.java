@@ -29,7 +29,7 @@ public class RecipientController {
      * Method to
      * @return
      */
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/")
     public ResponseEntity<RecipientEntity> createRecipient(@RequestBody @Valid Recipient recipient) {
         LOGGER.info("Processing create recipient ");
 
@@ -39,7 +39,7 @@ public class RecipientController {
     /**
      * Method to
      */
-    @GetMapping(value = "/{userId}")
+    @GetMapping(value = "/user/{userId}")
     public ResponseEntity<RecipientEntity> getRecipient(@PathVariable String userId) {
         LOGGER.info("Confirming the email ");
         return ResponseEntity.ok().body(recipientService.getRecipients(userId));
@@ -49,7 +49,7 @@ public class RecipientController {
      * Method to
      * @return
      */
-    @GetMapping(value = "/recipients")
+    @GetMapping(value = "/")
     public ResponseEntity<List<RecipientEntity>> getAll() {
         LOGGER.info("Confirming the email ");
         return ResponseEntity.ok().body(recipientService.getAll());

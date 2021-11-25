@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +37,18 @@ public class MinerServiceImpl implements MinerService {
     @Override
     public List<MinerEntity> getResourceByCurrency(String currency) {
         return minerRepository.findByResourceCurrency(currency);
+    }
+
+    @Override
+    public MinerEntity updateResource(Miner miner, String id) {
+        Optional<MinerEntity> minerEntity = minerRepository.findById(id);
+        if (minerEntity.isPresent()) {
+            MinerEntity newMinerEntity = inbound(miner);
+            newMinerEntity.setId(id);
+            return minerRepository.save(newMinerEntity);
+        } else {
+            return null;
+        }
     }
 
     private MinerEntity inbound(Miner miner) {
